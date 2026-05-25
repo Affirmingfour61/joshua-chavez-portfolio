@@ -61,9 +61,9 @@ export const projects = [
   {
     title: 'Meal Match',
     description:
-      'Team project for tracking recipes and meals with structured data entry and workflows that support planning and consistency over time.',
-    technologies: ['JavaScript', 'HTML', 'CSS', 'Group Project'],
-    githubUrl: 'https://github.com/Affirmingfour61/Group5-Recipe-MealTracker',
+      'Collaborated with a team of three to build a recipe and meal tracking app with structured data entry, planning workflows, and a deployed live demo on Render.',
+    technologies: ['JavaScript', 'HTML', 'CSS', 'Team Collaboration'],
+    githubUrl: 'https://github.com/anghel9/MealMatch',
     demoUrl: 'https://mealmatch-x0dr.onrender.com',
     demoLabel: 'View site',
   },
