@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: joshua-chavez-portfolio
+    runtime: static
+    repo: https://github.com/Affirmingfour61/joshua-chavez-portfolio
+    branch: main
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
