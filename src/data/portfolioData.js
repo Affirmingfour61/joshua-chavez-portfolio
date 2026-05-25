@@ -59,11 +59,13 @@ export const projects = [
     demoLabel: 'View site',
   },
   {
-    title: 'Recipe and Meal Tracker',
+    title: 'Meal Match',
     description:
       'Team project for tracking recipes and meals with structured data entry and workflows that support planning and consistency over time.',
     technologies: ['JavaScript', 'HTML', 'CSS', 'Group Project'],
     githubUrl: 'https://github.com/Affirmingfour61/Group5-Recipe-MealTracker',
+    demoUrl: 'https://mealmatch-x0dr.onrender.com',
+    demoLabel: 'View site',
   },
   {
     title: 'Rick and Morty API App',
