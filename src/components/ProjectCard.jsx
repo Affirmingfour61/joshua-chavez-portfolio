@@ -2,6 +2,8 @@ import { motion } from 'framer-motion'
 import { FiExternalLink, FiGithub } from 'react-icons/fi'
 
 function ProjectCard({ project }) {
+  const highlights = project.highlights ?? (project.description ? [project.description] : [])
+
   return (
     <motion.article
       className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-white/10 to-white/[0.03] p-6 shadow-lg shadow-black/20 backdrop-blur-md"
@@ -13,7 +15,12 @@ function ProjectCard({ project }) {
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-300/70 to-transparent opacity-0 transition group-hover:opacity-100" />
       <h3 className="text-xl font-semibold text-white">{project.title}</h3>
-      <p className="mt-3 text-sm leading-relaxed text-slate-300">{project.description}</p>
+
+      <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-relaxed text-slate-300 marker:text-sky-400/90">
+        {highlights.map((point) => (
+          <li key={point}>{point}</li>
+        ))}
+      </ul>
 
       <ul className="mt-4 flex flex-wrap gap-2">
         {project.technologies.map((tech) => (
@@ -44,7 +51,18 @@ function ProjectCard({ project }) {
             className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-sky-400/80 to-indigo-400/80 px-4 py-2 text-sm font-medium text-slate-950 transition hover:from-sky-300 hover:to-indigo-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
           >
             <FiExternalLink />
-            {project.demoLabel ?? 'Live Demo'}
+            {project.demoLabel ?? 'Live demo'}
+          </a>
+        ) : null}
+        {project.apiUrl ? (
+          <a
+            href={project.apiUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/5 px-4 py-2 text-sm text-slate-100 transition hover:border-sky-300/70 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+          >
+            <FiExternalLink />
+            {project.apiLabel ?? 'Live API'}
           </a>
         ) : null}
         {project.videoUrl ? (

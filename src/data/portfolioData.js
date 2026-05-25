@@ -51,8 +51,11 @@ export const skillGroups = [
 export const projects = [
   {
     title: 'Personal Portfolio',
-    description:
-      'Built this portfolio with React and Tailwind CSS, focused on clear storytelling, smooth section transitions, and a layout that works for recruiters on desktop and mobile.',
+    highlights: [
+      'Designed and deployed a recruiter-focused portfolio with full-screen sections, timeline experience view, and responsive layout.',
+      'Built with React, Tailwind CSS, and Framer Motion; hosted on Render with automatic deploys from GitHub.',
+      'Centralized content and links so projects, resume, and contact stay easy to update.',
+    ],
     technologies: ['React', 'Tailwind CSS', 'Framer Motion', 'Vite'],
     githubUrl: 'https://github.com/Affirmingfour61/joshua-chavez-portfolio',
     demoUrl: 'https://joshua-chavez-portfolio-website.onrender.com',
@@ -60,28 +63,40 @@ export const projects = [
   },
   {
     title: 'Meal Match',
-    description:
-      'Collaborated with a team of three on Meal Match, a recipe and meal tracking app with structured data entry, planning workflows, a live Render deployment, and a video walkthrough.',
-    technologies: ['JavaScript', 'HTML', 'CSS', 'Team Collaboration'],
+    highlights: [
+      'Collaborated with a team of three on a recipe and meal tracking product focused on planning and day-to-day use.',
+      'Shipped a live meal tracker web app on Render with structured data entry and planning features.',
+      'Integrated with a deployed REST API for data persistence, authentication flows, and backend-driven features.',
+      'Documented the build with a video walkthrough for demos and portfolio review.',
+    ],
+    technologies: ['JavaScript', 'React', 'REST API', 'Render', 'Team Collaboration'],
     githubUrl: 'https://github.com/anghel9/MealMatch',
     demoUrl: 'https://meal-tracker-app-su87.onrender.com',
-    demoLabel: 'View site',
+    demoLabel: 'Meal tracker demo',
+    apiUrl: 'https://mealtracker-86x4.onrender.com',
+    apiLabel: 'Live API',
     videoUrl: 'https://www.youtube.com/watch?v=vxz9epjxXmo',
     videoLabel: 'Video walkthrough',
   },
   {
     title: 'Recipe Tracker & Meal Planner',
-    description:
-      'CST Group 5 full-stack app: React frontend connected to a Spring Boot REST API on Render (Docker), with Firebase OAuth2, Swagger docs, and admin tooling. Users manage recipes and ingredients, build weekly meal plans, save favorites, filter by preference, and view stats; admins manage users and food data.',
+    highlights: [
+      'CST Group 5 full-stack capstone: React frontend with a Spring Boot REST API (Docker) deployed on Render.',
+      'Firebase OAuth2 for secure sign-in; Swagger for API documentation and testing.',
+      'Users manage recipes, ingredients, weekly meal plans, favorites, and preference-based filtering.',
+      'Admin tools for user and food management; GitHub Issues, milestones, and PR reviews for team delivery.',
+    ],
     technologies: ['React', 'Spring Boot', 'Firebase', 'REST API', 'Docker', 'Team Collaboration'],
     githubUrl: 'https://github.com/Group5-Project2-RecipeTracker/FrontEndSection',
-    demoUrl: 'https://mealtracker-86x4.onrender.com',
-    demoLabel: 'Live API',
   },
   {
     title: 'Video Game Recommender',
-    description:
-      'CST438 team Android app that recommends free-to-play games from a public API based on genre, platform, and play style. I built the admin panel to add and remove users, the game details screen (genre, platform, publisher, release date), and the star-rating review system backed by Room. Coordinated via Slack with a four-person team; completed 14 stories across login, discovery, sorting, and recommendations.',
+    highlights: [
+      'CST438 Android team app that recommends free-to-play games using genre, platform, and play-style preferences.',
+      'Owned admin tooling (add/remove users), game details (metadata and descriptions), and star-rating reviews stored in Room.',
+      'Collaborated via Slack; delivered 14 completed stories including login, discovery, sorting, and recommendations.',
+      'Strengthened Git workflow, API-to-database mapping, and early documentation habits.',
+    ],
     technologies: ['Kotlin', 'Jetpack Compose', 'Room', 'REST API', 'Team Collaboration'],
     githubUrl: 'https://github.com/Paulo-Camacho/CST438sp26_inclass',
     demoUrl: 'https://www.youtube.com/shorts/yxECam1A5QM',
@@ -89,15 +104,21 @@ export const projects = [
   },
   {
     title: 'Gym Log',
-    description:
-      'Java application for logging workouts and exercise sessions with organized data handling and a practical command-line or app-style workflow.',
+    highlights: [
+      'Java application for logging workouts and tracking exercise sessions over time.',
+      'Emphasizes organized data handling, clear structure, and practical OOP design.',
+      'Supports consistent record-keeping for training progress and session history.',
+    ],
     technologies: ['Java', 'OOP', 'Data Structures'],
     githubUrl: 'https://github.com/Affirmingfour61/HW4GymLog',
   },
   {
     title: 'Roulette Game',
-    description:
-      'Java-based casino-style roulette game with betting logic, game state handling, and interactive play designed around clear rules and outcomes.',
+    highlights: [
+      'Java casino-style roulette with defined betting rules and game-state management.',
+      'Interactive play loop with clear outcomes and user-facing feedback.',
+      'Practice project for control flow, OOP modeling, and logic validation.',
+    ],
     technologies: ['Java', 'Game Logic', 'OOP'],
     githubUrl: 'https://github.com/Affirmingfour61/roulette-Game',
   },
