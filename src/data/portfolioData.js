@@ -61,8 +61,8 @@ export const projects = [
   {
     title: 'Meal Match',
     description:
-      'Collaborated with a team of three to build a recipe and meal tracking app with structured data entry, planning workflows, and a deployed live demo on Render.',
-    technologies: ['JavaScript', 'HTML', 'CSS', 'Team Collaboration'],
+      'Group 5 Recipe Tracker and Meal Planner: a React web app backed by a Spring Boot REST API (Docker on Render) with Firebase OAuth2. Users create recipes, manage ingredients, build weekly meal plans, save favorites, filter by preference, and view profile stats; admins manage users and food data across the platform.',
+    technologies: ['React', 'Spring Boot', 'Firebase', 'REST API', 'Docker', 'Team Collaboration'],
     githubUrl: 'https://github.com/anghel9/MealMatch',
     demoUrl: 'https://meal-tracker-app-su87.onrender.com',
     demoLabel: 'View site',
