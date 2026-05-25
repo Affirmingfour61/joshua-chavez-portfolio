@@ -1,28 +1,32 @@
 export const navLinks = [
   { label: 'About', href: '#about' },
-  { label: 'Skills', href: '#skills' },
   { label: 'Projects', href: '#projects' },
   { label: 'Experience', href: '#experience' },
   { label: 'Resume', href: '#resume' },
   { label: 'Contact', href: '#contact' },
 ]
 
+export const educationData = {
+  status: 'College Graduate',
+  degree: 'B.S. in Computer Science',
+  school: 'California State University, Monterey Bay',
+  shortName: 'CSUMB',
+  roles: 'Software Developer · IT Specialist',
+}
+
 export const heroData = {
   name: 'Joshua Chavez',
-  title: 'Computer Science Graduate | IT Specialist | Systems & Software Developer',
+  roleLine: 'Software Developer · IT Specialist',
+  title: 'Computer Science Graduate | Software Developer | IT Specialist',
   intro:
-    'I build practical software and support reliable systems that keep teams moving. With a background in IT support and software development, I focus on clear troubleshooting, clean automation, and solutions that work in real environments.',
-  ctas: [
-    { label: 'Resume', href: '/Joshua_Chavez_Resume_5-21.pdf' },
-    { label: 'GitHub', href: 'https://github.com/Affirmingfour61' },
-    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/joshua-chavez-0314182a7/' },
-    { label: 'Contact', href: '#contact' },
-  ],
+    'I build practical software and support reliable systems that keep teams moving, with hands-on IT experience and a strong foundation from my degree.',
+  photoSrc: null,
 }
 
 export const aboutText = [
-  'I started in IT support, working directly with users and resolving issues in fast-paced environments. That experience built a strong foundation in troubleshooting, communication, and system reliability.',
-  'As I advanced through Computer Science, I expanded into scripting, automation, and software development. I enjoy breaking down technical problems, identifying root causes, and delivering solutions that are easier to manage over time.',
+  "I'm Joshua. I also work as an IT Specialist on campus, where most of my day is spent helping real people fix real problems, whether that's a login issue, a broken laptop, or software that refuses to cooperate. I like being the person who stays calm, explains things clearly, and follows through until it's actually resolved.",
+  'That support work taught me patience and how to communicate with all kinds of users. My CS degree pushed me into building things too: team projects, APIs, mobile apps, and web tools I can show in my portfolio. I am comfortable on the help desk and in the codebase, and I am always looking for ways to automate the repetitive stuff so I have more time for the work that matters.',
+  'Outside of work, I am technically trilingual: fluent in English and Spanish, with Japanese I have studied as well. That mix helps me connect with more people on campus and in the community. I take pride in being reliable, curious, and easy to work with. If you need someone who can support users, write clean code, and grow with a team, I would like to talk.',
 ]
 
 export const skillGroups = [

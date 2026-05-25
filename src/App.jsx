@@ -1,15 +1,15 @@
 import { motion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
+import FeaturedProject from './components/FeaturedProject'
+import HeroSection from './components/HeroSection'
 import NavBar from './components/NavBar'
-import ProjectCard from './components/ProjectCard'
 import SectionHeading from './components/SectionHeading'
-import SkillCategory from './components/SkillCategory'
 import {
   aboutText,
   contactData,
   courseworkData,
+  educationData,
   experienceData,
-  heroData,
   projects,
   skillGroups,
 } from './data/portfolioData'
@@ -17,7 +17,6 @@ import {
 const SECTION_META = [
   { id: 'home', label: 'Home' },
   { id: 'about', label: 'About' },
-  { id: 'skills', label: 'Skills' },
   { id: 'projects', label: 'Projects' },
   { id: 'experience', label: 'Experience' },
   { id: 'resume', label: 'Resume' },
@@ -103,6 +102,8 @@ const TIMELINE_COLORS = [
 
 function App() {
   const mainRef = useRef(null)
+  const experienceScrollRef = useRef(null)
+  const experienceColumnRefs = useRef([])
   const defaultExperienceIndex = experienceData.timeline.findIndex((item) => item.period.includes('Present'))
   const [activeSection, setActiveSection] = useState('home')
   const [selectedExperienceIndex, setSelectedExperienceIndex] = useState(
@@ -112,6 +113,24 @@ function App() {
   const scrollToSection = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
+
+  const scrollExperienceToIndex = (index) => {
+    const scroller = experienceScrollRef.current
+    const column = experienceColumnRefs.current[index]
+    if (!scroller || !column) return
+
+    const targetLeft = column.offsetLeft - (scroller.clientWidth - column.offsetWidth) / 2
+    scroller.scrollTo({ left: Math.max(0, targetLeft), behavior: 'smooth' })
+  }
+
+  const selectExperience = (index) => {
+    setSelectedExperienceIndex(index)
+  }
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => scrollExperienceToIndex(selectedExperienceIndex))
+    return () => cancelAnimationFrame(frame)
+  }, [selectedExperienceIndex])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -133,19 +152,13 @@ function App() {
 
   const activeIndex = SECTION_META.findIndex((section) => section.id === activeSection)
   const indicatorProgress = `${(Math.max(activeIndex, 0) / (SECTION_META.length - 1)) * 100}%`
-  const heroStats = [
-    ['500+', 'Users Supported'],
-    ['Tier 1/2', 'IT Support'],
-    ['Python + Bash', 'Automation'],
-    ['Bilingual', 'English + Spanish'],
-  ]
   const skillsHighlights = [
-    'Systems Troubleshooting',
-    'Automation Workflows',
-    'User Support',
+    'CSUMB Graduate',
+    'B.S. Computer Science',
+    'Software Developer',
+    'IT Specialist',
     'Full Stack Development',
-    'Network Fundamentals',
-    'Authentication',
+    'Trilingual',
   ]
   const selectedExperience = experienceData.timeline[selectedExperienceIndex] ?? experienceData.timeline[0]
 
@@ -207,168 +220,107 @@ function App() {
         ref={mainRef}
         className="h-[calc(100vh-73px)] snap-y snap-mandatory overscroll-none overflow-y-auto overflow-x-hidden"
       >
-        <section id="home" className="h-[calc(100vh-73px)] snap-start [scroll-snap-stop:always]">
-          <div className="mx-auto flex h-full w-full max-w-[96vw] flex-col justify-center px-4 py-5 md:px-8">
-            <motion.div
-              className="mb-6 inline-flex items-center gap-2 rounded-full border border-sky-300/40 bg-sky-400/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-sky-100"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.45, ease: 'easeOut' }}
-            >
-              Open to IT and Developer Roles
-            </motion.div>
-            <motion.p
-              className="text-sm uppercase tracking-[0.3em] text-sky-300"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: 'easeOut' }}
-            >
-              Welcome
-            </motion.p>
-            <motion.h1
-              className="mt-4 max-w-4xl bg-gradient-to-r from-white via-sky-100 to-indigo-200 bg-clip-text text-4xl font-bold leading-tight text-transparent md:text-6xl"
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, ease: 'easeOut', delay: 0.1 }}
-            >
-              {heroData.name}
-            </motion.h1>
-            <motion.p
-              className="mt-4 max-w-4xl text-lg text-slate-300 md:text-xl"
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, ease: 'easeOut', delay: 0.15 }}
-            >
-              {heroData.title}
-            </motion.p>
-            <motion.p
-              className="mt-6 max-w-3xl text-base leading-relaxed text-slate-300 md:text-lg"
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, ease: 'easeOut', delay: 0.2 }}
-            >
-              {heroData.intro}
-            </motion.p>
-            <motion.div
-              className="mt-8 flex flex-wrap gap-3"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, ease: 'easeOut', delay: 0.25 }}
-            >
-              {heroData.ctas.map((button, index) => (
-                <a
-                  key={button.label}
-                  href={button.href}
-                  onClick={(event) => {
-                    if (button.href.startsWith('#')) {
-                      event.preventDefault()
-                      scrollToSection(button.href.replace('#', ''))
-                    }
-                  }}
-                  target={button.href.startsWith('http') ? '_blank' : undefined}
-                  rel={button.href.startsWith('http') ? 'noreferrer' : undefined}
-                  className={
-                    index === 0
-                      ? 'rounded-xl bg-gradient-to-r from-sky-300 to-indigo-300 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:from-sky-200 hover:to-indigo-200'
-                      : 'rounded-xl border border-white/20 bg-white/5 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:border-sky-300/70 hover:text-white'
-                  }
-                >
-                  {button.label}
-                </a>
-              ))}
-            </motion.div>
-            <motion.div
-              className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, ease: 'easeOut', delay: 0.3 }}
-            >
-              {heroStats.map(([value, label]) => (
-                <div
-                  key={label}
-                  className="rounded-xl border border-white/10 bg-white/5 p-3 backdrop-blur-md"
-                >
-                  <p className="text-xl font-semibold text-white">{value}</p>
-                  <p className="text-xs uppercase tracking-[0.12em] text-slate-300">{label}</p>
-                </div>
-              ))}
-            </motion.div>
-          </div>
-        </section>
+        <HeroSection onContact={() => scrollToSection('contact')} />
 
-        {[
-          ['about', <SectionHeading key="h" eyebrow="About Me" title="Technical depth with people-first support experience" description="I enjoy solving real problems with practical systems and software." />, (
-            <div key="c" className="grid gap-4 md:grid-cols-2">
-              {aboutText.map((paragraph) => (
-                <p key={paragraph} className="rounded-2xl border border-cyan-100/15 bg-gradient-to-b from-cyan-300/12 to-cyan-100/[0.02] p-6 text-slate-200 backdrop-blur-md">
-                  {paragraph}
-                </p>
-              ))}
+        <motion.section
+          id="about"
+          className="relative h-[calc(100vh-73px)] snap-start [scroll-snap-stop:always]"
+          initial={SECTION_TRANSITIONS.about.initial}
+          whileInView={SECTION_TRANSITIONS.about.animate}
+          viewport={{ root: mainRef, amount: 0.35 }}
+          transition={{ type: 'spring', stiffness: 106, damping: 16, mass: 0.92 }}
+        >
+          <div className="mx-auto flex h-full w-full max-w-6xl flex-col justify-center px-4 py-6 md:px-8 md:py-8">
+            <div className="mb-5 shrink-0">
+              <p className="font-mono text-sm text-sky-400">About</p>
+              <h2 className="mt-1 text-3xl font-semibold text-white md:text-4xl">Who I am</h2>
             </div>
-          )],
-          ['skills', <SectionHeading key="h" eyebrow="Skills" title="Technical toolkit and practical strengths" description="Core technologies I use to solve support, systems, and software problems end-to-end." />, (
-            <div key="c" className="space-y-5">
-              <div className="rounded-3xl border border-sky-100/20 bg-gradient-to-r from-sky-400/20 via-indigo-400/14 to-fuchsia-400/14 p-5">
-                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-sky-100">Core Strengths</p>
-                <div className="mt-3 flex flex-wrap gap-2">
+
+            <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-2 lg:gap-5">
+              <div className="flex min-h-0 flex-col overflow-hidden rounded-2xl border border-cyan-200/20 bg-slate-950/55 p-6 shadow-lg shadow-black/20 backdrop-blur-md md:p-7">
+                <div className="shrink-0 rounded-xl border border-sky-400/25 bg-gradient-to-r from-sky-500/15 to-cyan-500/10 px-4 py-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-sky-300">
+                    {educationData.status}
+                  </p>
+                  <p className="mt-2 text-xl font-bold text-white md:text-2xl">{educationData.degree}</p>
+                  <p className="mt-1 text-sm font-medium text-sky-100/90 md:text-base">{educationData.school}</p>
+                  <p className="mt-3 text-base font-semibold text-white">{educationData.roles}</p>
+                </div>
+                <h3 className="mt-5 shrink-0 text-sm font-medium uppercase tracking-[0.14em] text-sky-300">About me</h3>
+                <div className="mt-4 min-h-0 flex-1 space-y-4 overflow-y-auto pr-1">
+                  {aboutText.map((paragraph, index) => (
+                    <p
+                      key={paragraph}
+                      className={`leading-relaxed text-slate-200 ${
+                        index === 0 ? 'text-lg md:text-xl' : 'text-base md:text-[1.05rem]'
+                      }`}
+                    >
+                      {paragraph}
+                    </p>
+                  ))}
+                </div>
+                <div className="mt-5 flex shrink-0 flex-wrap gap-2 border-t border-white/10 pt-5">
                   {skillsHighlights.map((highlight) => (
                     <span
                       key={highlight}
-                      className="rounded-full border border-sky-100/30 bg-slate-900/65 px-4 py-1.5 text-sm font-medium tracking-wide text-sky-50"
+                      className="rounded-md border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-slate-300"
                     >
                       {highlight}
                     </span>
                   ))}
                 </div>
               </div>
-              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                {skillGroups.map((group) => (
-                  <SkillCategory key={group.category} category={group.category} skills={group.skills} />
-                ))}
-              </div>
-              <div className="rounded-3xl border border-sky-100/20 bg-gradient-to-r from-cyan-400/14 via-sky-500/10 to-indigo-500/12 p-5">
-                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-cyan-100">Relevant Coursework</p>
-                <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                  {courseworkData.map((course) => (
-                    <article
-                      key={course.title}
-                      className="group rounded-3xl border border-sky-100/20 bg-gradient-to-br from-sky-300/14 to-cyan-100/[0.04] p-6 transition hover:-translate-y-1 hover:border-sky-100/40"
-                    >
-                      <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-sky-200/90">Coursework</p>
-                      <h3 className="text-xl font-semibold text-white">{course.title}</h3>
-                      <p className="mt-3 text-sm leading-relaxed text-slate-200">{course.focus}</p>
-                    </article>
+
+              <div className="flex min-h-0 flex-col overflow-hidden rounded-2xl border border-violet-200/20 bg-slate-950/55 p-6 shadow-lg shadow-black/20 backdrop-blur-md md:p-7">
+                <h3 className="shrink-0 text-sm font-medium uppercase tracking-[0.14em] text-violet-300">Skills</h3>
+                <ul className="mt-4 min-h-0 flex-1 space-y-4 overflow-y-auto pr-1">
+                  {skillGroups.map((group) => (
+                    <li key={group.category} className="border-b border-white/5 pb-3 last:border-0 last:pb-0">
+                      <p className="text-base font-medium text-slate-200">{group.category}</p>
+                      <p className="mt-1.5 text-sm leading-relaxed text-slate-400">
+                        {group.skills.join(' · ')}
+                      </p>
+                    </li>
                   ))}
+                </ul>
+                <div className="mt-5 shrink-0 border-t border-white/10 pt-5">
+                  <p className="text-xs font-medium uppercase tracking-[0.12em] text-sky-400/90">Coursework</p>
+                  <ul className="mt-2 max-h-[6rem] space-y-2 overflow-y-auto pr-1">
+                    {courseworkData.map((course) => (
+                      <li key={course.title} className="text-xs leading-snug text-slate-400 md:text-sm">
+                        <span className="text-slate-300">{course.title}</span>
+                        <span className="text-slate-600"> — </span>
+                        {course.focus}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
             </div>
-          )],
-          ['projects', <SectionHeading key="h" eyebrow="Projects" title="GitHub project showcase" description="Selected coursework and personal builds from my GitHub, including this live portfolio on Render." />, (
-            <div key="c" className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-              {projects.map((project) => (
-                <ProjectCard key={project.title} project={project} />
+          </div>
+        </motion.section>
+
+        <motion.section
+          id="projects"
+          className="relative min-h-[calc(100vh-73px)] snap-start [scroll-snap-stop:always]"
+          initial={SECTION_TRANSITIONS.projects.initial}
+          whileInView={SECTION_TRANSITIONS.projects.animate}
+          viewport={{ root: mainRef, amount: 0.2 }}
+          transition={{ type: 'spring', stiffness: 106, damping: 16, mass: 0.92 }}
+        >
+          <div className="mx-auto w-full max-w-6xl px-4 py-8 md:px-8 md:py-10">
+            <SectionHeading
+              eyebrow="Projects"
+              title="Selected work"
+              description="Coursework and team builds with links to code and live demos."
+            />
+            <div className="mt-6 grid gap-5 md:grid-cols-2 md:gap-6">
+              {projects.map((project, index) => (
+                <FeaturedProject key={project.title} project={project} index={index} />
               ))}
             </div>
-          )],
-        ].map(([id, heading, content]) => (
-          <motion.section
-            key={id}
-            id={id}
-            className="relative h-[calc(100vh-73px)] snap-start [scroll-snap-stop:always]"
-            initial={SECTION_TRANSITIONS[id].initial}
-            whileInView={SECTION_TRANSITIONS[id].animate}
-            viewport={{ root: mainRef, amount: 0.55 }}
-            transition={{ type: 'spring', stiffness: 106, damping: 16, mass: 0.92 }}
-          >
-            <div className={`pointer-events-none absolute -right-12 top-1/2 hidden h-56 w-56 -translate-y-1/2 rounded-full blur-3xl lg:block ${SECTION_THEME[id].glow}`} />
-            <div className="mx-auto flex h-full w-full max-w-[96vw] items-stretch px-4 py-5 md:px-8">
-              <div className={`flex h-full w-full flex-col overflow-y-auto rounded-[2rem] border p-6 backdrop-blur-xl md:p-8 ${SECTION_THEME[id].frame}`}>
-                {heading}
-                {content}
-              </div>
-            </div>
-          </motion.section>
-        ))}
+          </div>
+        </motion.section>
 
         <motion.section
           id="experience"
@@ -383,30 +335,38 @@ function App() {
             <div className={`flex h-full w-full flex-col rounded-[2rem] border p-6 backdrop-blur-xl md:p-8 ${SECTION_THEME.experience.frame}`}>
               <SectionHeading eyebrow="Experience" title={experienceData.role} description={experienceData.summary} />
               <div className="grid flex-1 gap-5 lg:grid-cols-[1.05fr_1.95fr]">
-                <aside className="rounded-2xl border border-white/15 bg-slate-900/70 p-5">
-                  <p className="text-xs uppercase tracking-[0.16em] text-emerald-200">Selected Role</p>
-                  <h3 className="mt-2 text-2xl font-semibold text-white">{selectedExperience.title}</h3>
-                  <p className="mt-1 text-sm text-slate-300">
-                    {selectedExperience.company} <span className="text-slate-400">| {selectedExperience.location}</span>
+                <aside className="rounded-2xl border border-white/15 bg-slate-900/70 p-6 md:p-7">
+                  {selectedExperience.period.includes('Present') ? (
+                    <p className="text-sm font-bold uppercase tracking-[0.22em] text-emerald-300">Present</p>
+                  ) : null}
+                  <p
+                    className={`text-xs uppercase tracking-[0.16em] text-emerald-200 ${
+                      selectedExperience.period.includes('Present') ? 'mt-3' : ''
+                    }`}
+                  >
+                    Selected Role
                   </p>
-                  <div className="mt-2 flex flex-wrap items-center gap-2">
-                    <p className="text-xs uppercase tracking-[0.14em] text-emerald-100/90">
-                      {selectedExperience.period}
-                    </p>
-                    {selectedExperience.period.includes('Present') ? (
-                      <span className="rounded-full border border-emerald-200/40 bg-emerald-300/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-emerald-100">
-                        Current
-                      </span>
-                    ) : null}
-                  </div>
-                  <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-relaxed text-slate-200">
+                  <h3 className="mt-3 text-3xl font-semibold leading-tight text-white md:text-4xl">
+                    {selectedExperience.title}
+                  </h3>
+                  <p className="mt-2 text-base text-slate-300 md:text-lg">
+                    {selectedExperience.company}{' '}
+                    <span className="text-slate-400">| {selectedExperience.location}</span>
+                  </p>
+                  <p className="mt-3 text-sm uppercase tracking-[0.14em] text-emerald-100/90 md:text-base">
+                    {selectedExperience.period}
+                  </p>
+                  <ul className="mt-5 list-disc space-y-3 pl-5 text-base leading-relaxed text-slate-200 md:text-lg">
                     {selectedExperience.bullets.map((bullet) => (
                       <li key={bullet}>{bullet}</li>
                     ))}
                   </ul>
                 </aside>
 
-                <div className="relative overflow-x-auto overflow-y-hidden pb-4">
+                <div
+                  ref={experienceScrollRef}
+                  className="relative overflow-x-auto overflow-y-hidden scroll-smooth pb-4"
+                >
                   <div className="min-w-[74rem]">
                     <div
                       className="grid overflow-hidden rounded-2xl border border-white/10"
@@ -416,21 +376,29 @@ function App() {
                         const startYear = item.period.match(/\d{4}/)?.[0] ?? 'Now'
                       const isCurrentRole = item.period.includes('Present')
                         return (
-                        <div key={`${item.company}-${item.period}-year`} className="relative">
+                        <div
+                          key={`${item.company}-${item.period}-year`}
+                          ref={(node) => {
+                            experienceColumnRefs.current[index] = node
+                          }}
+                          className="relative scroll-mt-4"
+                        >
                           <button
                             type="button"
-                            onClick={() => setSelectedExperienceIndex(index)}
-                            className={`w-full bg-gradient-to-r px-4 py-3 text-center text-2xl font-bold tracking-wide text-white transition hover:brightness-110 ${TIMELINE_COLORS[index % TIMELINE_COLORS.length]} ${
+                            onClick={() => selectExperience(index)}
+                            className={`flex w-full flex-col items-center justify-center bg-gradient-to-r px-4 py-3 text-center font-bold tracking-wide text-white transition hover:brightness-110 ${TIMELINE_COLORS[index % TIMELINE_COLORS.length]} ${
                               selectedExperienceIndex === index ? 'ring-2 ring-white/70 ring-inset' : ''
                             }`}
                           >
-                            {startYear}
+                            {isCurrentRole ? (
+                              <>
+                                <span className="text-[10px] font-semibold uppercase tracking-[0.2em]">Present</span>
+                                <span className="mt-1 text-2xl">{startYear}</span>
+                              </>
+                            ) : (
+                              <span className="text-2xl">{startYear}</span>
+                            )}
                           </button>
-                          {isCurrentRole ? (
-                            <span className="absolute right-2 top-2 rounded-full border border-emerald-100/70 bg-emerald-300/30 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-white">
-                              Current
-                            </span>
-                          ) : null}
                         </div>
                         )
                       })}
@@ -449,21 +417,25 @@ function App() {
                               {isTopCard ? (
                                 <button
                                   type="button"
-                                  onClick={() => setSelectedExperienceIndex(index)}
+                                  onClick={() => selectExperience(index)}
                                   className={`h-full w-full rounded-2xl border p-3 text-left backdrop-blur-md transition ${
                                     selectedExperienceIndex === index
                                       ? 'border-emerald-200/60 bg-emerald-300/10'
                                       : 'border-white/10 bg-slate-900/85 hover:border-emerald-100/35'
                                   }`}
                                 >
-                                  <div className="flex items-center justify-between gap-2">
-                                    <p className="text-[10px] uppercase tracking-[0.12em] text-emerald-100/90">{item.period}</p>
-                                    {isCurrentRole ? (
-                                      <span className="rounded-full border border-emerald-100/60 bg-emerald-300/20 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-emerald-100">
-                                        Current
-                                      </span>
-                                    ) : null}
-                                  </div>
+                                  {isCurrentRole ? (
+                                    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-emerald-300">
+                                      Present
+                                    </p>
+                                  ) : null}
+                                  <p
+                                    className={`text-[10px] uppercase tracking-[0.12em] text-emerald-100/90 ${
+                                      isCurrentRole ? 'mt-1' : ''
+                                    }`}
+                                  >
+                                    {item.period}
+                                  </p>
                                   <h3 className="mt-1 text-sm font-semibold leading-tight text-white">{item.title}</h3>
                                   <p className="text-xs leading-tight text-slate-300">
                                     {item.company}
@@ -494,7 +466,7 @@ function App() {
                               <div className={`absolute h-8 w-[2px] bg-white/30 ${index % 2 === 1 ? 'top-0' : 'bottom-0'}`} />
                               <button
                                 type="button"
-                                onClick={() => setSelectedExperienceIndex(index)}
+                                onClick={() => selectExperience(index)}
                                 aria-label={`Select ${item.title}`}
                               className={`h-4 w-4 rounded-full border shadow-[0_0_12px_rgba(103,232,249,0.6)] transition ${
                                   selectedExperienceIndex === index
@@ -521,21 +493,25 @@ function App() {
                               {isBottomCard ? (
                                 <button
                                   type="button"
-                                  onClick={() => setSelectedExperienceIndex(index)}
+                                  onClick={() => selectExperience(index)}
                                   className={`h-full w-full rounded-2xl border p-3 text-left backdrop-blur-md transition ${
                                     selectedExperienceIndex === index
                                       ? 'border-emerald-200/60 bg-emerald-300/10'
                                       : 'border-white/10 bg-slate-900/85 hover:border-emerald-100/35'
                                   }`}
                                 >
-                                  <div className="flex items-center justify-between gap-2">
-                                    <p className="text-[10px] uppercase tracking-[0.12em] text-emerald-100/90">{item.period}</p>
-                                    {isCurrentRole ? (
-                                      <span className="rounded-full border border-emerald-100/60 bg-emerald-300/20 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-emerald-100">
-                                        Current
-                                      </span>
-                                    ) : null}
-                                  </div>
+                                  {isCurrentRole ? (
+                                    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-emerald-300">
+                                      Present
+                                    </p>
+                                  ) : null}
+                                  <p
+                                    className={`text-[10px] uppercase tracking-[0.12em] text-emerald-100/90 ${
+                                      isCurrentRole ? 'mt-1' : ''
+                                    }`}
+                                  >
+                                    {item.period}
+                                  </p>
                                   <h3 className="mt-1 text-sm font-semibold leading-tight text-white">{item.title}</h3>
                                   <p className="text-xs leading-tight text-slate-300">
                                     {item.company}

@@ -19,7 +19,7 @@ function NavBar({ onNavigate }) {
         >
           JC
         </a>
-        <ul className="hidden items-center gap-6 md:flex">
+        <ul className="hidden items-center gap-8 md:flex">
           {navLinks.map((link) => (
             <li key={link.href}>
               <a
