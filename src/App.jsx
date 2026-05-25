@@ -155,9 +155,10 @@ function App() {
   const skillsHighlights = [
     'CSUMB Graduate',
     'B.S. Computer Science',
-    'Software Developer',
+    'React & Spring Boot',
+    'Android (Kotlin)',
+    'Deployed on Render',
     'IT Specialist',
-    'Full Stack Development',
     'Trilingual',
   ]
   const selectedExperience = experienceData.timeline[selectedExperienceIndex] ?? experienceData.timeline[0]

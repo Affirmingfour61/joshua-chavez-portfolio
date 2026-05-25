@@ -31,24 +31,35 @@ export const aboutText = [
 
 export const skillGroups = [
   {
-    category: 'Programming',
-    skills: ['Python', 'Java', 'JavaScript', 'SQL', 'C++', 'Bash'],
+    category: 'Languages',
+    skills: ['Java', 'JavaScript', 'Kotlin', 'Python', 'SQL', 'C++', 'Bash'],
   },
   {
-    category: 'Web Development',
-    skills: ['HTML', 'CSS', 'React', 'Node.js'],
+    category: 'Frontend & Mobile',
+    skills: ['React', 'HTML', 'CSS', 'Tailwind CSS', 'Jetpack Compose', 'Framer Motion', 'Vite'],
+  },
+  {
+    category: 'Backend & Data',
+    skills: ['Spring Boot', 'REST APIs', 'Firebase', 'Room', 'Docker', 'OOP'],
+  },
+  {
+    category: 'Deployment & Tools',
+    skills: ['Git', 'GitHub', 'Render', 'VS Code', 'Swagger'],
   },
   {
     category: 'IT & Systems',
-    skills: ['Active Directory', 'Microsoft 365', 'Linux', 'Windows', 'macOS'],
+    skills: ['Active Directory', 'Microsoft 365', 'Linux', 'Windows', 'macOS', 'Networking'],
   },
   {
-    category: 'Tools',
-    skills: ['Git', 'GitHub', 'VS Code', 'Microsoft Excel', 'Microsoft Office'],
-  },
-  {
-    category: 'Concepts',
-    skills: ['Data Structures', 'Algorithms', 'Networking', 'Authentication', 'Agile'],
+    category: 'How I Work',
+    skills: [
+      'Agile',
+      'Team Collaboration',
+      'Data Structures',
+      'Algorithms',
+      'Authentication',
+      'Technical Support',
+    ],
   },
 ]
 
