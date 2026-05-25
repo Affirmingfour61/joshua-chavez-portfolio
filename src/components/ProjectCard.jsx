@@ -47,6 +47,17 @@ function ProjectCard({ project }) {
             {project.demoLabel ?? 'Live Demo'}
           </a>
         ) : null}
+        {project.videoUrl ? (
+          <a
+            href={project.videoUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/5 px-4 py-2 text-sm text-slate-100 transition hover:border-sky-300/70 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+          >
+            <FiExternalLink />
+            {project.videoLabel ?? 'Video walkthrough'}
+          </a>
+        ) : null}
       </div>
     </motion.article>
   )

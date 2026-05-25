@@ -64,8 +64,10 @@ export const projects = [
       'Collaborated with a team of three to build a recipe and meal tracking app with structured data entry, planning workflows, and a deployed live demo on Render.',
     technologies: ['JavaScript', 'HTML', 'CSS', 'Team Collaboration'],
     githubUrl: 'https://github.com/anghel9/MealMatch',
-    demoUrl: 'https://mealmatch-x0dr.onrender.com',
+    demoUrl: 'https://meal-tracker-app-su87.onrender.com',
     demoLabel: 'View site',
+    videoUrl: 'https://www.youtube.com/watch?v=vxz9epjxXmo',
+    videoLabel: 'Video walkthrough',
   },
   {
     title: 'Video Game Recommender',
