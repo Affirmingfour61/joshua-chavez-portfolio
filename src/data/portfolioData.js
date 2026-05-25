@@ -50,44 +50,41 @@ export const skillGroups = [
 
 export const projects = [
   {
-    title: 'Full Stack Task Manager',
+    title: 'Personal Portfolio',
     description:
-      'Built a full stack task management app with secure authentication, task tracking, and collaboration workflows for organized day-to-day execution.',
-    technologies: ['React', 'Node.js', 'Express', 'PostgreSQL'],
-    githubUrl: 'https://github.com/your-username/full-stack-task-manager',
-    demoUrl: 'https://your-demo-link.com/task-manager',
-  },
-  {
-    title: 'IT Ticketing Dashboard',
-    description:
-      'Developed an IT support dashboard to track incidents, prioritize requests, and monitor resolution activity across support queues.',
-    technologies: ['React', 'JavaScript', 'SQL', 'REST API'],
-    githubUrl: 'https://github.com/your-username/it-ticketing-dashboard',
-    demoUrl: 'https://your-demo-link.com/it-dashboard',
-  },
-  {
-    title: 'Network Monitoring Tool',
-    description:
-      'Created a network monitoring utility that checks host availability and reports status changes to speed up troubleshooting and response.',
-    technologies: ['Python', 'Bash', 'Linux', 'Networking'],
-    githubUrl: 'https://github.com/your-username/network-monitoring-tool',
-    demoUrl: 'https://your-demo-link.com/network-monitor',
-  },
-  {
-    title: 'Authentication System',
-    description:
-      'Implemented an authentication system with token-based sessions, role-based access checks, and protected routes for secure user flows.',
-    technologies: ['Node.js', 'JWT', 'SQL', 'Security'],
-    githubUrl: 'https://github.com/your-username/authentication-system',
-    demoUrl: 'https://your-demo-link.com/auth-system',
-  },
-  {
-    title: 'Portfolio Website',
-    description:
-      'Designed and built a personal portfolio with responsive layouts, smooth transitions, and clear technical storytelling for recruiters and hiring teams.',
+      'Built this portfolio with React and Tailwind CSS, focused on clear storytelling, smooth section transitions, and a layout that works for recruiters on desktop and mobile.',
     technologies: ['React', 'Tailwind CSS', 'Framer Motion', 'Vite'],
-    githubUrl: 'https://github.com/your-username/portfolio-website',
-    demoUrl: 'https://your-demo-link.com/portfolio',
+    githubUrl: 'https://github.com/Affirmingfour61/joshua-chavez-portfolio',
+    demoUrl: 'https://joshua-chavez-portfolio-website.onrender.com',
+    demoLabel: 'View site',
+  },
+  {
+    title: 'Recipe and Meal Tracker',
+    description:
+      'Team project for tracking recipes and meals with structured data entry and workflows that support planning and consistency over time.',
+    technologies: ['JavaScript', 'HTML', 'CSS', 'Group Project'],
+    githubUrl: 'https://github.com/Affirmingfour61/Group5-Recipe-MealTracker',
+  },
+  {
+    title: 'Rick and Morty API App',
+    description:
+      'Web app that pulls character data from a public API and presents it in a browsable interface with server-rendered views and clean page flow.',
+    technologies: ['Node.js', 'EJS', 'REST API', 'HTML/CSS'],
+    githubUrl: 'https://github.com/Affirmingfour61/RICKNMORTYAPI',
+  },
+  {
+    title: 'Gym Log',
+    description:
+      'Java application for logging workouts and exercise sessions with organized data handling and a practical command-line or app-style workflow.',
+    technologies: ['Java', 'OOP', 'Data Structures'],
+    githubUrl: 'https://github.com/Affirmingfour61/HW4GymLog',
+  },
+  {
+    title: 'Roulette Game',
+    description:
+      'Java-based casino-style roulette game with betting logic, game state handling, and interactive play designed around clear rules and outcomes.',
+    technologies: ['Java', 'Game Logic', 'OOP'],
+    githubUrl: 'https://github.com/Affirmingfour61/roulette-Game',
   },
 ]
 

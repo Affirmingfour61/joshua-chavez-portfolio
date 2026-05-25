@@ -343,7 +343,7 @@ function App() {
               </div>
             </div>
           )],
-          ['projects', <SectionHeading key="h" eyebrow="Projects" title="GitHub project showcase" description="Add your real repository and demo links to present your best work." />, (
+          ['projects', <SectionHeading key="h" eyebrow="Projects" title="GitHub project showcase" description="Selected coursework and personal builds from my GitHub, including this live portfolio on Render." />, (
             <div key="c" className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               {projects.map((project) => (
                 <ProjectCard key={project.title} project={project} />

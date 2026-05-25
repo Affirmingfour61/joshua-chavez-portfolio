@@ -26,7 +26,7 @@ function ProjectCard({ project }) {
         ))}
       </ul>
 
-      <div className="mt-6 flex gap-3">
+      <div className="mt-6 flex flex-wrap gap-3">
         <a
           href={project.githubUrl}
           target="_blank"
@@ -36,15 +36,17 @@ function ProjectCard({ project }) {
           <FiGithub />
           GitHub
         </a>
-        <a
-          href={project.demoUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-sky-400/80 to-indigo-400/80 px-4 py-2 text-sm font-medium text-slate-950 transition hover:from-sky-300 hover:to-indigo-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
-        >
-          <FiExternalLink />
-          Live Demo
-        </a>
+        {project.demoUrl ? (
+          <a
+            href={project.demoUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-sky-400/80 to-indigo-400/80 px-4 py-2 text-sm font-medium text-slate-950 transition hover:from-sky-300 hover:to-indigo-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+          >
+            <FiExternalLink />
+            {project.demoLabel ?? 'Live Demo'}
+          </a>
+        ) : null}
       </div>
     </motion.article>
   )
