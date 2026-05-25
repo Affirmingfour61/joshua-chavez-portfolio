@@ -73,6 +73,8 @@ export const projects = [
       'CST438 team Android app that recommends free-to-play games from a public API based on genre, platform, and play style. I built the admin panel to add and remove users, the game details screen (genre, platform, publisher, release date), and the star-rating review system backed by Room. Coordinated via Slack with a four-person team; completed 14 stories across login, discovery, sorting, and recommendations.',
     technologies: ['Kotlin', 'Jetpack Compose', 'Room', 'REST API', 'Team Collaboration'],
     githubUrl: 'https://github.com/Paulo-Camacho/CST438sp26_inclass',
+    demoUrl: 'https://www.youtube.com/shorts/yxECam1A5QM',
+    demoLabel: 'Watch demo',
   },
   {
     title: 'Gym Log',
