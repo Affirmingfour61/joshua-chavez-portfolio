@@ -74,7 +74,7 @@ export const projects = [
     technologies: ['Kotlin', 'Jetpack Compose', 'Room', 'REST API', 'Team Collaboration'],
     githubUrl: 'https://github.com/Paulo-Camacho/CST438sp26_inclass',
     demoUrl: 'https://www.youtube.com/shorts/yxECam1A5QM',
-    demoLabel: 'Watch demo',
+    demoLabel: 'Video walkthrough',
   },
   {
     title: 'Gym Log',
