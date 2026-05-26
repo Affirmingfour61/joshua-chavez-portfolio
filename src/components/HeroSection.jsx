@@ -6,7 +6,7 @@ function HeroSection({ onContact }) {
   return (
     <section
       id="home"
-      className="relative flex min-h-[calc(100vh-73px)] snap-start items-center overflow-hidden [scroll-snap-stop:always]"
+      className="relative flex min-h-[calc(100dvh-4.75rem)] items-center overflow-hidden py-8 md:py-10 xl:min-h-[calc(100vh-73px)] xl:snap-start xl:[scroll-snap-stop:always]"
     >
       <div className="hero-mesh pointer-events-none absolute inset-0 opacity-40" aria-hidden />
 

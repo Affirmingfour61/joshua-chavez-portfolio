@@ -37,6 +37,11 @@ const SECTION_MOTION = {
 const experienceCardActive = 'border-sky-400/40 bg-sky-500/10'
 const experienceCardIdle = 'border-white/10 bg-slate-900/60 hover:border-sky-400/25'
 
+/** Ongoing roles: show a single "Present" label (no "Sep 2024 - Present" + year stack). */
+function formatExperiencePeriod(period) {
+  return period.includes('Present') ? 'Present' : period
+}
+
 function App() {
   const mainRef = useRef(null)
   const experienceScrollRef = useRef(null)
@@ -45,6 +50,9 @@ function App() {
   const [activeSection, setActiveSection] = useState('home')
   const [selectedExperienceIndex, setSelectedExperienceIndex] = useState(
     defaultExperienceIndex >= 0 ? defaultExperienceIndex : 0,
+  )
+  const [usePageScroll, setUsePageScroll] = useState(() =>
+    typeof window !== 'undefined' ? window.matchMedia('(max-width: 1279px)').matches : false,
   )
 
   const scrollToSection = (id) => {
@@ -70,6 +78,14 @@ function App() {
   }, [selectedExperienceIndex])
 
   useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 1279px)')
+    const syncScrollMode = () => setUsePageScroll(mediaQuery.matches)
+    syncScrollMode()
+    mediaQuery.addEventListener('change', syncScrollMode)
+    return () => mediaQuery.removeEventListener('change', syncScrollMode)
+  }, [])
+
+  useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries
@@ -77,7 +93,9 @@ function App() {
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio)
         if (visible[0]?.target?.id) setActiveSection(visible[0].target.id)
       },
-      { root: mainRef.current, threshold: [0.4, 0.6, 0.8], rootMargin: '0px' },
+      usePageScroll
+        ? { threshold: [0.12, 0.25, 0.4], rootMargin: '-4.75rem 0px -55% 0px' }
+        : { root: mainRef.current, threshold: [0.4, 0.6, 0.8], rootMargin: '0px' },
     )
 
     SECTION_META.forEach((section) => {
@@ -85,7 +103,7 @@ function App() {
       if (node) observer.observe(node)
     })
     return () => observer.disconnect()
-  }, [])
+  }, [usePageScroll])
 
   const activeIndex = SECTION_META.findIndex((section) => section.id === activeSection)
   const indicatorProgress = `${(Math.max(activeIndex, 0) / (SECTION_META.length - 1)) * 100}%`
@@ -99,6 +117,8 @@ function App() {
     'Trilingual',
   ]
   const selectedExperience = experienceData.timeline[selectedExperienceIndex] ?? experienceData.timeline[0]
+  const sectionViewport = (amount) =>
+    usePageScroll ? { amount, once: true } : { root: mainRef, amount }
 
   return (
     <div className="min-h-screen bg-[#140f37] text-slate-100">
@@ -156,19 +176,19 @@ function App() {
 
       <main
         ref={mainRef}
-        className="min-h-[calc(100vh-73px)] overflow-y-auto overflow-x-hidden xl:h-[calc(100vh-73px)] xl:snap-y xl:snap-mandatory xl:overscroll-none"
+        className="overflow-x-hidden xl:h-[calc(100vh-73px)] xl:overflow-y-auto xl:snap-y xl:snap-mandatory xl:overscroll-none"
       >
         <HeroSection onContact={() => scrollToSection('contact')} />
 
         <motion.section
           id="about"
-          className="section-decor section-decor--about relative min-h-[calc(100vh-73px)] snap-start [scroll-snap-stop:always] xl:h-[calc(100vh-73px)]"
+          className="section-decor section-decor--about relative px-0 py-10 md:py-12 xl:min-h-[calc(100vh-73px)] xl:h-[calc(100vh-73px)] xl:snap-start xl:[scroll-snap-stop:always]"
           initial={SECTION_MOTION.initial}
           whileInView={SECTION_MOTION.animate}
-          viewport={{ root: mainRef, amount: 0.35 }}
+          viewport={sectionViewport(0.35)}
           transition={{ type: 'spring', stiffness: 106, damping: 16, mass: 0.92 }}
         >
-          <div className="mx-auto flex h-full w-full max-w-6xl flex-col justify-center px-4 py-8 md:px-8 md:py-10">
+          <div className="mx-auto flex w-full max-w-6xl flex-col justify-start px-4 md:px-8 xl:h-full xl:justify-center xl:py-10">
             <SectionHeading eyebrow="About" title="Who I am" />
 
             <div className="flex flex-1 flex-col gap-5">
@@ -227,13 +247,13 @@ function App() {
 
         <motion.section
           id="skills"
-          className="section-decor section-decor--skills relative min-h-[calc(100vh-73px)] snap-start [scroll-snap-stop:always] xl:h-[calc(100vh-73px)]"
+          className="section-decor section-decor--skills relative px-0 py-10 md:py-12 xl:min-h-[calc(100vh-73px)] xl:h-[calc(100vh-73px)] xl:snap-start xl:[scroll-snap-stop:always]"
           initial={SECTION_MOTION.initial}
           whileInView={SECTION_MOTION.animate}
-          viewport={{ root: mainRef, amount: 0.35 }}
+          viewport={sectionViewport(0.35)}
           transition={{ type: 'spring', stiffness: 106, damping: 16, mass: 0.92 }}
         >
-          <div className="mx-auto flex h-full w-full max-w-6xl flex-col justify-center px-4 py-8 md:px-8 md:py-10">
+          <div className="mx-auto flex w-full max-w-6xl flex-col justify-start px-4 md:px-8 xl:h-full xl:justify-center xl:py-10">
             <SectionHeading
               eyebrow="Skills"
               title="Tools I use"
@@ -268,13 +288,13 @@ function App() {
 
         <motion.section
           id="projects"
-          className="section-decor section-decor--projects relative min-h-[calc(100vh-73px)] snap-start [scroll-snap-stop:always]"
+          className="section-decor section-decor--projects relative px-0 py-10 md:py-12 xl:min-h-[calc(100vh-73px)] xl:snap-start xl:[scroll-snap-stop:always]"
           initial={SECTION_MOTION.initial}
           whileInView={SECTION_MOTION.animate}
-          viewport={{ root: mainRef, amount: 0.2 }}
+          viewport={sectionViewport(0.2)}
           transition={{ type: 'spring', stiffness: 106, damping: 16, mass: 0.92 }}
         >
-          <div className="mx-auto w-full max-w-6xl px-4 py-8 md:px-8 md:py-10">
+          <div className="mx-auto w-full max-w-6xl px-4 md:px-8 xl:py-10">
             <SectionHeading
               eyebrow="Projects"
               title="Selected work"
@@ -290,26 +310,17 @@ function App() {
 
         <motion.section
           id="experience"
-          className="section-decor section-decor--experience relative min-h-[calc(100vh-73px)] snap-start [scroll-snap-stop:always] xl:h-[calc(100vh-73px)]"
+          className="section-decor section-decor--experience relative px-0 py-10 md:py-12 xl:min-h-[calc(100vh-73px)] xl:h-[calc(100vh-73px)] xl:snap-start xl:[scroll-snap-stop:always]"
           initial={SECTION_MOTION.initial}
           whileInView={SECTION_MOTION.animate}
-          viewport={{ root: mainRef, amount: 0.35 }}
+          viewport={sectionViewport(0.35)}
           transition={{ type: 'spring', stiffness: 106, damping: 16, mass: 0.92 }}
         >
-          <div className="mx-auto flex h-full w-full max-w-6xl flex-col px-4 py-8 md:px-8 md:py-10">
+          <div className="mx-auto flex w-full max-w-6xl flex-col px-4 md:px-8 xl:h-full xl:py-10">
             <SectionHeading eyebrow="Experience" title={experienceData.role} description={experienceData.summary} />
             <div className="grid flex-1 gap-5 xl:grid-cols-[1.05fr_1.95fr]">
               <aside className={PANEL_PAD}>
-                  {selectedExperience.period.includes('Present') ? (
-                    <p className="text-sm font-bold uppercase tracking-[0.22em] text-sky-300">Present</p>
-                  ) : null}
-                  <p
-                    className={`text-xs uppercase tracking-[0.16em] text-sky-300/90 ${
-                      selectedExperience.period.includes('Present') ? 'mt-3' : ''
-                    }`}
-                  >
-                    Selected Role
-                  </p>
+                  <p className="text-xs uppercase tracking-[0.16em] text-sky-300/90">Selected Role</p>
                   <h3 className="mt-3 text-3xl font-semibold leading-tight text-white md:text-4xl">
                     {selectedExperience.title}
                   </h3>
@@ -317,8 +328,14 @@ function App() {
                     {selectedExperience.company}{' '}
                     <span className="text-slate-400">| {selectedExperience.location}</span>
                   </p>
-                  <p className="mt-3 text-sm uppercase tracking-[0.14em] text-slate-400 md:text-base">
-                    {selectedExperience.period}
+                  <p
+                    className={`mt-3 text-sm uppercase tracking-[0.14em] md:text-base ${
+                      selectedExperience.period.includes('Present')
+                        ? 'font-bold text-sky-300'
+                        : 'text-slate-400'
+                    }`}
+                  >
+                    {formatExperiencePeriod(selectedExperience.period)}
                   </p>
                   <ul className="mt-5 list-disc space-y-3 pl-5 text-base leading-relaxed text-slate-200 md:text-lg">
                     {selectedExperience.bullets.map((bullet) => (
@@ -337,15 +354,14 @@ function App() {
                         selectedExperienceIndex === index ? experienceCardActive : experienceCardIdle
                       }`}
                     >
-                      {item.period.includes('Present') ? (
-                        <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-sky-300">Present</p>
-                      ) : null}
                       <p
-                        className={`text-[10px] uppercase tracking-[0.12em] text-slate-400 ${
-                          item.period.includes('Present') ? 'mt-1' : ''
+                        className={`text-[10px] uppercase tracking-[0.12em] ${
+                          item.period.includes('Present')
+                            ? 'font-bold text-sky-300'
+                            : 'text-slate-400'
                         }`}
                       >
-                        {item.period}
+                        {formatExperiencePeriod(item.period)}
                       </p>
                       <h3 className="mt-1 text-base font-semibold leading-tight text-white">{item.title}</h3>
                       <p className="text-sm leading-tight text-slate-300">
@@ -391,10 +407,7 @@ function App() {
                             }`}
                           >
                             {isCurrentRole ? (
-                              <>
-                                <span className="text-[10px] font-semibold uppercase tracking-[0.2em]">Present</span>
-                                <span className="mt-1 text-2xl">{startYear}</span>
-                              </>
+                              <span className="text-2xl font-semibold tracking-wide">Present</span>
                             ) : (
                               <span className="text-2xl">{startYear}</span>
                             )}
@@ -422,17 +435,12 @@ function App() {
                                     selectedExperienceIndex === index ? experienceCardActive : experienceCardIdle
                                   }`}
                                 >
-                                  {isCurrentRole ? (
-                                    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-sky-300">
-                                      Present
-                                    </p>
-                                  ) : null}
                                   <p
-                                    className={`text-[10px] uppercase tracking-[0.12em] text-slate-400 ${
-                                      isCurrentRole ? 'mt-1' : ''
+                                    className={`text-[10px] uppercase tracking-[0.12em] ${
+                                      isCurrentRole ? 'font-bold text-sky-300' : 'text-slate-400'
                                     }`}
                                   >
-                                    {item.period}
+                                    {formatExperiencePeriod(item.period)}
                                   </p>
                                   <h3 className="mt-1 text-sm font-semibold leading-tight text-white">{item.title}</h3>
                                   <p className="text-xs leading-tight text-slate-300">
@@ -494,17 +502,12 @@ function App() {
                                     selectedExperienceIndex === index ? experienceCardActive : experienceCardIdle
                                   }`}
                                 >
-                                  {isCurrentRole ? (
-                                    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-sky-300">
-                                      Present
-                                    </p>
-                                  ) : null}
                                   <p
-                                    className={`text-[10px] uppercase tracking-[0.12em] text-slate-400 ${
-                                      isCurrentRole ? 'mt-1' : ''
+                                    className={`text-[10px] uppercase tracking-[0.12em] ${
+                                      isCurrentRole ? 'font-bold text-sky-300' : 'text-slate-400'
                                     }`}
                                   >
-                                    {item.period}
+                                    {formatExperiencePeriod(item.period)}
                                   </p>
                                   <h3 className="mt-1 text-sm font-semibold leading-tight text-white">{item.title}</h3>
                                   <p className="text-xs leading-tight text-slate-300">
@@ -533,13 +536,13 @@ function App() {
 
         <motion.section
           id="resume"
-          className="section-decor section-decor--resume relative min-h-[calc(100vh-73px)] snap-start [scroll-snap-stop:always] xl:h-[calc(100vh-73px)]"
+          className="section-decor section-decor--resume relative px-0 py-10 md:py-12 xl:min-h-[calc(100vh-73px)] xl:h-[calc(100vh-73px)] xl:snap-start xl:[scroll-snap-stop:always]"
           initial={SECTION_MOTION.initial}
           whileInView={SECTION_MOTION.animate}
-          viewport={{ root: mainRef, amount: 0.35 }}
+          viewport={sectionViewport(0.35)}
           transition={{ type: 'spring', stiffness: 106, damping: 16, mass: 0.92 }}
         >
-          <div className="mx-auto flex h-full w-full max-w-6xl flex-col justify-center px-4 py-8 md:px-8 md:py-10">
+          <div className="mx-auto flex w-full max-w-6xl flex-col justify-start px-4 md:px-8 xl:h-full xl:justify-center xl:py-10">
             <SectionHeading
               eyebrow="Resume"
               title="Resume preview and download"
@@ -552,9 +555,12 @@ function App() {
                   <iframe
                     src="/Joshua_Chavez_Resume_5-21.pdf#view=FitH"
                     title="Joshua Chavez Resume Preview"
-                    className="h-[20rem] w-full sm:h-[24rem] md:h-[28rem] xl:h-[34rem]"
+                    className="pointer-events-none h-[20rem] w-full touch-pan-y sm:h-[24rem] sm:pointer-events-auto md:h-[28rem] xl:h-[34rem]"
                   />
                 </div>
+                <p className="mt-2 text-xs text-slate-500 xl:hidden">
+                  Scroll past the preview to keep reading, or use Download below for the full PDF.
+                </p>
               </div>
               <div className={`flex h-full flex-col justify-center ${PANEL_PAD}`}>
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-sky-300">Resume PDF</p>
@@ -577,13 +583,13 @@ function App() {
 
         <motion.section
           id="contact"
-          className="section-decor section-decor--contact relative min-h-[calc(100vh-73px)] snap-start [scroll-snap-stop:always] xl:h-[calc(100vh-73px)]"
+          className="section-decor section-decor--contact relative px-0 py-10 md:py-12 xl:min-h-[calc(100vh-73px)] xl:h-[calc(100vh-73px)] xl:snap-start xl:[scroll-snap-stop:always]"
           initial={SECTION_MOTION.initial}
           whileInView={SECTION_MOTION.animate}
-          viewport={{ root: mainRef, amount: 0.35 }}
+          viewport={sectionViewport(0.35)}
           transition={{ type: 'spring', stiffness: 106, damping: 16, mass: 0.92 }}
         >
-          <div className="mx-auto flex h-full w-full max-w-6xl flex-col justify-center px-4 py-8 md:px-8 md:py-10">
+          <div className="mx-auto flex w-full max-w-6xl flex-col justify-start px-4 md:px-8 xl:h-full xl:justify-center xl:py-10">
             <SectionHeading
               eyebrow="Contact"
               title="Let’s connect"
