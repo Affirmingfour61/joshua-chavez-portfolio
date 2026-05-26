@@ -44,6 +44,8 @@ function formatExperiencePeriod(period) {
 
 function App() {
   const mainRef = useRef(null)
+  /** Element backing `mainRef` — state avoids passing a ref object into Framer `viewport` during render (eslint). */
+  const [mainScrollRoot, setMainScrollRoot] = useState(null)
   const experienceScrollRef = useRef(null)
   const experienceColumnRefs = useRef([])
   const defaultExperienceIndex = experienceData.timeline.findIndex((item) => item.period.includes('Present'))
@@ -86,6 +88,8 @@ function App() {
   }, [])
 
   useEffect(() => {
+    if (!usePageScroll && !mainScrollRoot) return
+
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries
@@ -94,8 +98,8 @@ function App() {
         if (visible[0]?.target?.id) setActiveSection(visible[0].target.id)
       },
       usePageScroll
-        ? { threshold: [0.12, 0.25, 0.4], rootMargin: '-4.75rem 0px -55% 0px' }
-        : { root: mainRef.current, threshold: [0.4, 0.6, 0.8], rootMargin: '0px' },
+        ? { threshold: [0.12, 0.25, 0.4], rootMargin: '-76px 0px -55% 0px' }
+        : { root: mainScrollRoot, threshold: [0.4, 0.6, 0.8], rootMargin: '0px' },
     )
 
     SECTION_META.forEach((section) => {
@@ -103,7 +107,7 @@ function App() {
       if (node) observer.observe(node)
     })
     return () => observer.disconnect()
-  }, [usePageScroll])
+  }, [usePageScroll, mainScrollRoot])
 
   const activeIndex = SECTION_META.findIndex((section) => section.id === activeSection)
   const indicatorProgress = `${(Math.max(activeIndex, 0) / (SECTION_META.length - 1)) * 100}%`
@@ -118,7 +122,9 @@ function App() {
   ]
   const selectedExperience = experienceData.timeline[selectedExperienceIndex] ?? experienceData.timeline[0]
   const sectionViewport = (amount) =>
-    usePageScroll ? { amount, once: true } : { root: mainRef, amount }
+    usePageScroll
+      ? { amount, once: true }
+      : { root: mainScrollRoot ?? undefined, amount: 'some', once: true }
 
   return (
     <div className="min-h-screen bg-[#140f37] text-slate-100">
@@ -175,20 +181,23 @@ function App() {
       </aside>
 
       <main
-        ref={mainRef}
+        ref={(node) => {
+          mainRef.current = node
+          setMainScrollRoot(node)
+        }}
         className="overflow-x-hidden xl:h-[calc(100vh-73px)] xl:overflow-y-auto xl:snap-y xl:snap-mandatory xl:overscroll-none"
       >
         <HeroSection onContact={() => scrollToSection('contact')} />
 
         <motion.section
           id="about"
-          className="section-decor section-decor--about relative px-0 py-10 md:py-12 xl:min-h-[calc(100vh-73px)] xl:h-[calc(100vh-73px)] xl:snap-start xl:[scroll-snap-stop:always]"
+          className="section-decor section-decor--about relative px-0 py-10 md:py-12 xl:min-h-[calc(100vh-73px)] xl:snap-start xl:[scroll-snap-stop:always]"
           initial={SECTION_MOTION.initial}
           whileInView={SECTION_MOTION.animate}
           viewport={sectionViewport(0.35)}
           transition={{ type: 'spring', stiffness: 106, damping: 16, mass: 0.92 }}
         >
-          <div className="mx-auto flex w-full max-w-6xl flex-col justify-start px-4 md:px-8 xl:h-full xl:justify-center xl:py-10">
+          <div className="mx-auto flex w-full max-w-6xl flex-col justify-start px-4 py-8 md:px-8 xl:py-10">
             <SectionHeading eyebrow="About" title="Who I am" />
 
             <div className="flex flex-1 flex-col gap-5">
@@ -247,13 +256,13 @@ function App() {
 
         <motion.section
           id="skills"
-          className="section-decor section-decor--skills relative px-0 py-10 md:py-12 xl:min-h-[calc(100vh-73px)] xl:h-[calc(100vh-73px)] xl:snap-start xl:[scroll-snap-stop:always]"
+          className="section-decor section-decor--skills relative px-0 py-10 md:py-12 xl:min-h-[calc(100vh-73px)] xl:snap-start xl:[scroll-snap-stop:always]"
           initial={SECTION_MOTION.initial}
           whileInView={SECTION_MOTION.animate}
           viewport={sectionViewport(0.35)}
           transition={{ type: 'spring', stiffness: 106, damping: 16, mass: 0.92 }}
         >
-          <div className="mx-auto flex w-full max-w-6xl flex-col justify-start px-4 md:px-8 xl:h-full xl:justify-center xl:py-10">
+          <div className="mx-auto flex w-full max-w-6xl flex-col justify-start px-4 py-8 md:px-8 xl:py-10">
             <SectionHeading
               eyebrow="Skills"
               title="Tools I use"
@@ -310,13 +319,13 @@ function App() {
 
         <motion.section
           id="experience"
-          className="section-decor section-decor--experience relative px-0 py-10 md:py-12 xl:min-h-[calc(100vh-73px)] xl:h-[calc(100vh-73px)] xl:snap-start xl:[scroll-snap-stop:always]"
+          className="section-decor section-decor--experience relative px-0 py-10 md:py-12 xl:min-h-[calc(100vh-73px)] xl:snap-start xl:[scroll-snap-stop:always]"
           initial={SECTION_MOTION.initial}
           whileInView={SECTION_MOTION.animate}
           viewport={sectionViewport(0.35)}
           transition={{ type: 'spring', stiffness: 106, damping: 16, mass: 0.92 }}
         >
-          <div className="mx-auto flex w-full max-w-6xl flex-col px-4 md:px-8 xl:h-full xl:py-10">
+          <div className="mx-auto flex w-full max-w-6xl flex-col px-4 py-8 md:px-8 xl:py-10">
             <SectionHeading eyebrow="Experience" title={experienceData.role} description={experienceData.summary} />
             <div className="grid flex-1 gap-5 xl:grid-cols-[1.05fr_1.95fr]">
               <aside className={PANEL_PAD}>
@@ -379,7 +388,7 @@ function App() {
 
                 <div
                   ref={experienceScrollRef}
-                  className={`relative hidden overflow-x-auto overflow-y-hidden scroll-smooth pb-4 xl:block ${PANEL_PAD}`}
+                  className={`relative hidden overflow-x-auto overflow-y-visible scroll-smooth pb-4 xl:block ${PANEL_PAD}`}
                 >
                   <div className="min-w-[74rem]">
                     <div
@@ -536,13 +545,13 @@ function App() {
 
         <motion.section
           id="resume"
-          className="section-decor section-decor--resume relative px-0 py-10 md:py-12 xl:min-h-[calc(100vh-73px)] xl:h-[calc(100vh-73px)] xl:snap-start xl:[scroll-snap-stop:always]"
+          className="section-decor section-decor--resume relative px-0 py-10 md:py-12 xl:min-h-[calc(100vh-73px)] xl:snap-start xl:[scroll-snap-stop:always]"
           initial={SECTION_MOTION.initial}
           whileInView={SECTION_MOTION.animate}
           viewport={sectionViewport(0.35)}
           transition={{ type: 'spring', stiffness: 106, damping: 16, mass: 0.92 }}
         >
-          <div className="mx-auto flex w-full max-w-6xl flex-col justify-start px-4 md:px-8 xl:h-full xl:justify-center xl:py-10">
+          <div className="mx-auto flex w-full max-w-6xl flex-col justify-start px-4 py-8 md:px-8 xl:py-10">
             <SectionHeading
               eyebrow="Resume"
               title="Resume preview and download"
@@ -583,13 +592,13 @@ function App() {
 
         <motion.section
           id="contact"
-          className="section-decor section-decor--contact relative px-0 py-10 md:py-12 xl:min-h-[calc(100vh-73px)] xl:h-[calc(100vh-73px)] xl:snap-start xl:[scroll-snap-stop:always]"
+          className="section-decor section-decor--contact relative px-0 py-10 md:py-12 xl:min-h-[calc(100vh-73px)] xl:snap-start xl:[scroll-snap-stop:always]"
           initial={SECTION_MOTION.initial}
           whileInView={SECTION_MOTION.animate}
           viewport={sectionViewport(0.35)}
           transition={{ type: 'spring', stiffness: 106, damping: 16, mass: 0.92 }}
         >
-          <div className="mx-auto flex w-full max-w-6xl flex-col justify-start px-4 md:px-8 xl:h-full xl:justify-center xl:py-10">
+          <div className="mx-auto flex w-full max-w-6xl flex-col justify-start px-4 py-8 md:px-8 xl:py-10">
             <SectionHeading
               eyebrow="Contact"
               title="Let’s connect"
