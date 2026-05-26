@@ -76,24 +76,29 @@ function HeroSection({ onContact }) {
 
         <motion.div
           className="flex justify-center lg:justify-end"
-          initial={{ opacity: 0, scale: 0.96 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, ease: 'easeOut', delay: 0.1 }}
         >
-          <div className="photo-frame relative h-[min(22rem,55vh)] w-[min(18rem,80vw)] md:h-[26rem] md:w-[22rem]">
-            {heroData.photoSrc ? (
-              <img
-                src={heroData.photoSrc}
-                alt={heroData.name}
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              <div className="flex h-full w-full flex-col items-center justify-center gap-2 bg-slate-900/60 px-6 text-center">
-                <span className="text-5xl font-semibold text-slate-600">JC</span>
-                <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Photo coming soon</p>
-                <p className="text-[11px] text-slate-600">Add `photoSrc` in portfolioData.js</p>
-              </div>
-            )}
+          <div className="hero-portrait h-[min(22rem,55vh)] w-[min(18rem,80vw)] md:h-[26rem] md:w-[22rem]">
+            <div className="hero-portrait__glow" aria-hidden />
+            <div className="hero-portrait__frame relative h-full w-full">
+              {heroData.photoSrc ? (
+                <>
+                  <img
+                    src={heroData.photoSrc}
+                    alt={heroData.name}
+                    className="hero-portrait__image"
+                  />
+                  <div className="hero-portrait__overlay" aria-hidden />
+                </>
+              ) : (
+                <div className="flex h-full w-full flex-col items-center justify-center gap-2 bg-slate-900/60 px-6 text-center">
+                  <span className="text-5xl font-semibold text-slate-600">JC</span>
+                  <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Photo coming soon</p>
+                </div>
+              )}
+            </div>
           </div>
         </motion.div>
       </div>

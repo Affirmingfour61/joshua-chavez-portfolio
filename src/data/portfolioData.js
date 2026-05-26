@@ -1,5 +1,6 @@
 export const navLinks = [
   { label: 'About', href: '#about' },
+  { label: 'Skills', href: '#skills' },
   { label: 'Projects', href: '#projects' },
   { label: 'Experience', href: '#experience' },
   { label: 'Resume', href: '#resume' },
@@ -20,7 +21,7 @@ export const heroData = {
   title: 'Computer Science Graduate | Software Developer | IT Specialist',
   intro:
     'I build practical software and support reliable systems that keep teams moving, with hands-on IT experience and a strong foundation from my degree.',
-  photoSrc: null,
+  photoSrc: '/joshua-headshot.png',
 }
 
 export const aboutText = [
@@ -231,7 +232,7 @@ export const experienceData = {
 }
 
 export const contactData = {
-  email: 'joshchavez@csumb.edu',
+  email: 'raiderjoshjc81@gmail.com',
   phone: '(424) 366-2394',
   linkedin: 'https://www.linkedin.com/in/joshua-chavez-0314182a7/',
   github: 'https://github.com/Affirmingfour61',

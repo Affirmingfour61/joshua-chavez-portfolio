@@ -10,6 +10,7 @@ import {
   courseworkData,
   educationData,
   experienceData,
+  heroData,
   projects,
   skillGroups,
 } from './data/portfolioData'
@@ -17,88 +18,24 @@ import {
 const SECTION_META = [
   { id: 'home', label: 'Home' },
   { id: 'about', label: 'About' },
+  { id: 'skills', label: 'Skills' },
   { id: 'projects', label: 'Projects' },
   { id: 'experience', label: 'Experience' },
   { id: 'resume', label: 'Resume' },
   { id: 'contact', label: 'Contact' },
 ]
 
-const SECTION_TRANSITIONS = {
-  about: {
-    initial: { opacity: 0, x: -140, y: 72, rotate: -2, scale: 0.9, filter: 'blur(16px)' },
-    animate: { opacity: 1, x: 0, y: 0, rotate: 0, scale: 1, filter: 'blur(0px)' },
-  },
-  skills: {
-    initial: { opacity: 0, x: 150, y: 64, rotate: 2, scale: 0.9, filter: 'blur(16px)' },
-    animate: { opacity: 1, x: 0, y: 0, rotate: 0, scale: 1, filter: 'blur(0px)' },
-  },
-  projects: {
-    initial: {
-      opacity: 0,
-      y: 140,
-      scale: 0.78,
-      rotateX: 18,
-      transformPerspective: 1200,
-      filter: 'blur(18px)',
-    },
-    animate: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      rotateX: 0,
-      transformPerspective: 1200,
-      filter: 'blur(0px)',
-    },
-  },
-  experience: {
-    initial: { opacity: 0, clipPath: 'inset(0 100% 0 0 round 28px)', y: 54, filter: 'blur(12px)' },
-    animate: { opacity: 1, clipPath: 'inset(0 0% 0 0 round 28px)', y: 0, filter: 'blur(0px)' },
-  },
-  resume: {
-    initial: { opacity: 0, clipPath: 'inset(0 0 0 100% round 28px)', y: 54, filter: 'blur(12px)' },
-    animate: { opacity: 1, clipPath: 'inset(0 0 0 0% round 28px)', y: 0, filter: 'blur(0px)' },
-  },
-  contact: {
-    initial: { opacity: 0, y: 150, scale: 0.76, rotate: -1.5, filter: 'blur(20px)' },
-    animate: { opacity: 1, y: 0, scale: 1, rotate: 0, filter: 'blur(0px)' },
-  },
+const PANEL =
+  'relative overflow-hidden rounded-2xl border border-sky-300/25 bg-gradient-to-br from-slate-900/85 via-slate-900/70 to-[#101a44]/65 shadow-[0_22px_48px_rgba(8,47,73,0.38)] backdrop-blur-md before:pointer-events-none before:absolute before:inset-0 before:opacity-0 before:transition before:duration-300 before:bg-[radial-gradient(circle_at_25%_20%,rgba(56,189,248,0.22),transparent_40%),radial-gradient(circle_at_80%_18%,rgba(99,102,241,0.16),transparent_42%)] hover:before:opacity-100'
+const PANEL_PAD = `${PANEL} p-6 md:p-7`
+
+const SECTION_MOTION = {
+  initial: { opacity: 0, y: 28 },
+  animate: { opacity: 1, y: 0 },
 }
 
-const SECTION_THEME = {
-  about: {
-    frame: 'border-cyan-200/20 bg-gradient-to-br from-cyan-400/18 via-slate-900/55 to-blue-500/12',
-    glow: 'bg-cyan-300/30',
-  },
-  skills: {
-    frame: 'border-violet-200/20 bg-gradient-to-br from-violet-400/18 via-slate-900/55 to-indigo-500/12',
-    glow: 'bg-violet-300/30',
-  },
-  projects: {
-    frame: 'border-fuchsia-200/20 bg-gradient-to-br from-fuchsia-400/16 via-slate-900/55 to-sky-500/12',
-    glow: 'bg-fuchsia-300/30',
-  },
-  experience: {
-    frame: 'border-emerald-200/20 bg-gradient-to-br from-emerald-400/16 via-slate-900/55 to-cyan-500/12',
-    glow: 'bg-emerald-300/30',
-  },
-  resume: {
-    frame: 'border-amber-200/20 bg-gradient-to-br from-amber-300/18 via-slate-900/55 to-orange-500/12',
-    glow: 'bg-amber-200/30',
-  },
-  contact: {
-    frame: 'border-indigo-200/20 bg-gradient-to-br from-indigo-400/16 via-slate-900/55 to-sky-500/12',
-    glow: 'bg-indigo-200/30',
-  },
-}
-
-const TIMELINE_COLORS = [
-  'from-orange-400 to-amber-400',
-  'from-yellow-400 to-lime-400',
-  'from-emerald-400 to-cyan-400',
-  'from-cyan-400 to-sky-400',
-  'from-fuchsia-400 to-pink-400',
-  'from-indigo-400 to-blue-400',
-]
+const experienceCardActive = 'border-sky-400/40 bg-sky-500/10'
+const experienceCardIdle = 'border-white/10 bg-slate-900/60 hover:border-sky-400/25'
 
 function App() {
   const mainRef = useRef(null)
@@ -219,27 +156,25 @@ function App() {
 
       <main
         ref={mainRef}
-        className="h-[calc(100vh-73px)] snap-y snap-mandatory overscroll-none overflow-y-auto overflow-x-hidden"
+        className="min-h-[calc(100vh-73px)] overflow-y-auto overflow-x-hidden xl:h-[calc(100vh-73px)] xl:snap-y xl:snap-mandatory xl:overscroll-none"
       >
         <HeroSection onContact={() => scrollToSection('contact')} />
 
         <motion.section
           id="about"
-          className="relative h-[calc(100vh-73px)] snap-start [scroll-snap-stop:always]"
-          initial={SECTION_TRANSITIONS.about.initial}
-          whileInView={SECTION_TRANSITIONS.about.animate}
+          className="section-decor section-decor--about relative min-h-[calc(100vh-73px)] snap-start [scroll-snap-stop:always] xl:h-[calc(100vh-73px)]"
+          initial={SECTION_MOTION.initial}
+          whileInView={SECTION_MOTION.animate}
           viewport={{ root: mainRef, amount: 0.35 }}
           transition={{ type: 'spring', stiffness: 106, damping: 16, mass: 0.92 }}
         >
-          <div className="mx-auto flex h-full w-full max-w-6xl flex-col justify-center px-4 py-6 md:px-8 md:py-8">
-            <div className="mb-5 shrink-0">
-              <p className="font-mono text-sm text-sky-400">About</p>
-              <h2 className="mt-1 text-3xl font-semibold text-white md:text-4xl">Who I am</h2>
-            </div>
+          <div className="mx-auto flex h-full w-full max-w-6xl flex-col justify-center px-4 py-8 md:px-8 md:py-10">
+            <SectionHeading eyebrow="About" title="Who I am" />
 
-            <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-2 lg:gap-5">
-              <div className="flex min-h-0 flex-col overflow-hidden rounded-2xl border border-cyan-200/20 bg-slate-950/55 p-6 shadow-lg shadow-black/20 backdrop-blur-md md:p-7">
-                <div className="shrink-0 rounded-xl border border-sky-400/25 bg-gradient-to-r from-sky-500/15 to-cyan-500/10 px-4 py-4">
+            <div className="flex flex-1 flex-col gap-5">
+              <div className={`flex flex-col overflow-hidden ${PANEL_PAD}`}>
+                <h3 className="text-sm font-medium uppercase tracking-[0.14em] text-sky-300">College graduate</h3>
+                <div className="mt-4 shrink-0 rounded-xl border border-sky-400/25 bg-gradient-to-r from-sky-500/15 to-cyan-500/10 px-4 py-4">
                   <p className="text-xs font-semibold uppercase tracking-[0.18em] text-sky-300">
                     {educationData.status}
                   </p>
@@ -247,54 +182,43 @@ function App() {
                   <p className="mt-1 text-sm font-medium text-sky-100/90 md:text-base">{educationData.school}</p>
                   <p className="mt-3 text-base font-semibold text-white">{educationData.roles}</p>
                 </div>
-                <h3 className="mt-5 shrink-0 text-sm font-medium uppercase tracking-[0.14em] text-sky-300">About me</h3>
-                <div className="mt-4 min-h-0 flex-1 space-y-4 overflow-y-auto pr-1">
-                  {aboutText.map((paragraph, index) => (
-                    <p
-                      key={paragraph}
-                      className={`leading-relaxed text-slate-200 ${
-                        index === 0 ? 'text-lg md:text-xl' : 'text-base md:text-[1.05rem]'
-                      }`}
-                    >
-                      {paragraph}
-                    </p>
-                  ))}
+              </div>
+
+              <div className={`flex flex-col overflow-hidden ${PANEL_PAD}`}>
+                <h3 className="text-sm font-medium uppercase tracking-[0.14em] text-sky-300">About me</h3>
+                <div className="mt-4 grid gap-6 md:grid-cols-[1fr_min(17.5rem,42%)] md:gap-8 md:items-start">
+                  <div className="order-2 space-y-4 md:order-1">
+                    {aboutText.map((paragraph, index) => (
+                      <p
+                        key={paragraph}
+                        className={`leading-relaxed text-slate-200 ${
+                          index === 0 ? 'text-lg md:text-xl' : 'text-base md:text-[1.05rem]'
+                        }`}
+                      >
+                        {paragraph}
+                      </p>
+                    ))}
+                  </div>
+                  <div className="order-1 shrink-0 md:order-2">
+                    <div className="overflow-hidden rounded-xl border border-sky-400/25 bg-slate-900/60 shadow-inner shadow-black/20">
+                      <img
+                        src="/joshua-about.png"
+                        alt={heroData.name}
+                        className="aspect-[4/5] w-full object-cover object-[center_18%] sm:aspect-[5/6] md:aspect-[3/5] md:min-h-[16rem]"
+                        loading="lazy"
+                      />
+                    </div>
+                  </div>
                 </div>
                 <div className="mt-5 flex shrink-0 flex-wrap gap-2 border-t border-white/10 pt-5">
                   {skillsHighlights.map((highlight) => (
                     <span
                       key={highlight}
-                      className="rounded-md border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-slate-300"
+                      className="rounded-full border border-sky-300/30 bg-sky-400/10 px-3 py-1.5 text-xs text-sky-100 shadow-[0_0_16px_rgba(56,189,248,0.12)]"
                     >
                       {highlight}
                     </span>
                   ))}
-                </div>
-              </div>
-
-              <div className="flex min-h-0 flex-col overflow-hidden rounded-2xl border border-violet-200/20 bg-slate-950/55 p-6 shadow-lg shadow-black/20 backdrop-blur-md md:p-7">
-                <h3 className="shrink-0 text-sm font-medium uppercase tracking-[0.14em] text-violet-300">Skills</h3>
-                <ul className="mt-4 min-h-0 flex-1 space-y-4 overflow-y-auto pr-1">
-                  {skillGroups.map((group) => (
-                    <li key={group.category} className="border-b border-white/5 pb-3 last:border-0 last:pb-0">
-                      <p className="text-base font-medium text-slate-200">{group.category}</p>
-                      <p className="mt-1.5 text-sm leading-relaxed text-slate-400">
-                        {group.skills.join(' · ')}
-                      </p>
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-5 shrink-0 border-t border-white/10 pt-5">
-                  <p className="text-xs font-medium uppercase tracking-[0.12em] text-sky-400/90">Coursework</p>
-                  <ul className="mt-2 max-h-[6rem] space-y-2 overflow-y-auto pr-1">
-                    {courseworkData.map((course) => (
-                      <li key={course.title} className="text-xs leading-snug text-slate-400 md:text-sm">
-                        <span className="text-slate-300">{course.title}</span>
-                        <span className="text-slate-600"> — </span>
-                        {course.focus}
-                      </li>
-                    ))}
-                  </ul>
                 </div>
               </div>
             </div>
@@ -302,10 +226,51 @@ function App() {
         </motion.section>
 
         <motion.section
+          id="skills"
+          className="section-decor section-decor--skills relative min-h-[calc(100vh-73px)] snap-start [scroll-snap-stop:always] xl:h-[calc(100vh-73px)]"
+          initial={SECTION_MOTION.initial}
+          whileInView={SECTION_MOTION.animate}
+          viewport={{ root: mainRef, amount: 0.35 }}
+          transition={{ type: 'spring', stiffness: 106, damping: 16, mass: 0.92 }}
+        >
+          <div className="mx-auto flex h-full w-full max-w-6xl flex-col justify-center px-4 py-8 md:px-8 md:py-10">
+            <SectionHeading
+              eyebrow="Skills"
+              title="Tools I use"
+              description="A quick overview of the languages, frameworks, and systems I work with."
+            />
+
+            <div className={`flex flex-1 flex-col ${PANEL_PAD}`}>
+              <ul className="space-y-4">
+                {skillGroups.map((group) => (
+                  <li key={group.category} className="border-b border-white/5 pb-3 last:border-0 last:pb-0">
+                    <p className="text-base font-medium text-slate-200">{group.category}</p>
+                    <p className="mt-1.5 text-sm leading-relaxed text-slate-400">{group.skills.join(' · ')}</p>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="mt-6 border-t border-white/10 pt-6">
+                <p className="text-xs font-medium uppercase tracking-[0.12em] text-sky-400/90">Coursework</p>
+                <ul className="mt-3 space-y-2">
+                  {courseworkData.map((course) => (
+                    <li key={course.title} className="text-xs leading-snug text-slate-400 md:text-sm">
+                      <span className="text-slate-300">{course.title}</span>
+                      <span className="text-slate-600"> — </span>
+                      {course.focus}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </motion.section>
+
+        <motion.section
           id="projects"
-          className="relative min-h-[calc(100vh-73px)] snap-start [scroll-snap-stop:always]"
-          initial={SECTION_TRANSITIONS.projects.initial}
-          whileInView={SECTION_TRANSITIONS.projects.animate}
+          className="section-decor section-decor--projects relative min-h-[calc(100vh-73px)] snap-start [scroll-snap-stop:always]"
+          initial={SECTION_MOTION.initial}
+          whileInView={SECTION_MOTION.animate}
           viewport={{ root: mainRef, amount: 0.2 }}
           transition={{ type: 'spring', stiffness: 106, damping: 16, mass: 0.92 }}
         >
@@ -325,23 +290,21 @@ function App() {
 
         <motion.section
           id="experience"
-          className="relative h-[calc(100vh-73px)] snap-start [scroll-snap-stop:always]"
-          initial={SECTION_TRANSITIONS.experience.initial}
-          whileInView={SECTION_TRANSITIONS.experience.animate}
-          viewport={{ root: mainRef, amount: 0.55 }}
-          transition={{ type: 'spring', stiffness: 108, damping: 15, mass: 0.9 }}
+          className="section-decor section-decor--experience relative min-h-[calc(100vh-73px)] snap-start [scroll-snap-stop:always] xl:h-[calc(100vh-73px)]"
+          initial={SECTION_MOTION.initial}
+          whileInView={SECTION_MOTION.animate}
+          viewport={{ root: mainRef, amount: 0.35 }}
+          transition={{ type: 'spring', stiffness: 106, damping: 16, mass: 0.92 }}
         >
-          <div className="pointer-events-none absolute -left-10 top-1/2 hidden h-56 w-56 -translate-y-1/2 rounded-full bg-emerald-300/30 blur-3xl lg:block" />
-          <div className="mx-auto flex h-full w-full max-w-[96vw] flex-col px-4 py-5 md:px-8">
-            <div className={`flex h-full w-full flex-col rounded-[2rem] border p-6 backdrop-blur-xl md:p-8 ${SECTION_THEME.experience.frame}`}>
-              <SectionHeading eyebrow="Experience" title={experienceData.role} description={experienceData.summary} />
-              <div className="grid flex-1 gap-5 lg:grid-cols-[1.05fr_1.95fr]">
-                <aside className="rounded-2xl border border-white/15 bg-slate-900/70 p-6 md:p-7">
+          <div className="mx-auto flex h-full w-full max-w-6xl flex-col px-4 py-8 md:px-8 md:py-10">
+            <SectionHeading eyebrow="Experience" title={experienceData.role} description={experienceData.summary} />
+            <div className="grid flex-1 gap-5 xl:grid-cols-[1.05fr_1.95fr]">
+              <aside className={PANEL_PAD}>
                   {selectedExperience.period.includes('Present') ? (
-                    <p className="text-sm font-bold uppercase tracking-[0.22em] text-emerald-300">Present</p>
+                    <p className="text-sm font-bold uppercase tracking-[0.22em] text-sky-300">Present</p>
                   ) : null}
                   <p
-                    className={`text-xs uppercase tracking-[0.16em] text-emerald-200 ${
+                    className={`text-xs uppercase tracking-[0.16em] text-sky-300/90 ${
                       selectedExperience.period.includes('Present') ? 'mt-3' : ''
                     }`}
                   >
@@ -354,7 +317,7 @@ function App() {
                     {selectedExperience.company}{' '}
                     <span className="text-slate-400">| {selectedExperience.location}</span>
                   </p>
-                  <p className="mt-3 text-sm uppercase tracking-[0.14em] text-emerald-100/90 md:text-base">
+                  <p className="mt-3 text-sm uppercase tracking-[0.14em] text-slate-400 md:text-base">
                     {selectedExperience.period}
                   </p>
                   <ul className="mt-5 list-disc space-y-3 pl-5 text-base leading-relaxed text-slate-200 md:text-lg">
@@ -364,9 +327,43 @@ function App() {
                   </ul>
                 </aside>
 
+                <div className="grid gap-3 xl:hidden">
+                  {experienceData.timeline.map((item, index) => (
+                    <button
+                      key={`${item.company}-${item.period}-mobile`}
+                      type="button"
+                      onClick={() => selectExperience(index)}
+                      className={`rounded-2xl border p-4 text-left transition ${
+                        selectedExperienceIndex === index ? experienceCardActive : experienceCardIdle
+                      }`}
+                    >
+                      {item.period.includes('Present') ? (
+                        <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-sky-300">Present</p>
+                      ) : null}
+                      <p
+                        className={`text-[10px] uppercase tracking-[0.12em] text-slate-400 ${
+                          item.period.includes('Present') ? 'mt-1' : ''
+                        }`}
+                      >
+                        {item.period}
+                      </p>
+                      <h3 className="mt-1 text-base font-semibold leading-tight text-white">{item.title}</h3>
+                      <p className="text-sm leading-tight text-slate-300">
+                        {item.company}
+                        <span className="text-slate-400"> | {item.location}</span>
+                      </p>
+                      <ul className="mt-2 list-disc space-y-1 pl-4 text-sm leading-snug text-slate-200">
+                        {item.bullets.slice(0, 2).map((bullet) => (
+                          <li key={bullet}>{bullet}</li>
+                        ))}
+                      </ul>
+                    </button>
+                  ))}
+                </div>
+
                 <div
                   ref={experienceScrollRef}
-                  className="relative overflow-x-auto overflow-y-hidden scroll-smooth pb-4"
+                  className={`relative hidden overflow-x-auto overflow-y-hidden scroll-smooth pb-4 xl:block ${PANEL_PAD}`}
                 >
                   <div className="min-w-[74rem]">
                     <div
@@ -387,8 +384,10 @@ function App() {
                           <button
                             type="button"
                             onClick={() => selectExperience(index)}
-                            className={`flex w-full flex-col items-center justify-center bg-gradient-to-r px-4 py-3 text-center font-bold tracking-wide text-white transition hover:brightness-110 ${TIMELINE_COLORS[index % TIMELINE_COLORS.length]} ${
-                              selectedExperienceIndex === index ? 'ring-2 ring-white/70 ring-inset' : ''
+                            className={`flex w-full flex-col items-center justify-center px-4 py-3 text-center font-bold tracking-wide text-white transition ${
+                              selectedExperienceIndex === index
+                                ? 'bg-sky-500/30 ring-1 ring-sky-300/60'
+                                : 'bg-slate-800/80 hover:bg-slate-700/80'
                             }`}
                           >
                             {isCurrentRole ? (
@@ -419,19 +418,17 @@ function App() {
                                 <button
                                   type="button"
                                   onClick={() => selectExperience(index)}
-                                  className={`h-full w-full rounded-2xl border p-3 text-left backdrop-blur-md transition ${
-                                    selectedExperienceIndex === index
-                                      ? 'border-emerald-200/60 bg-emerald-300/10'
-                                      : 'border-white/10 bg-slate-900/85 hover:border-emerald-100/35'
+                                  className={`h-full w-full rounded-2xl border p-3 text-left transition ${
+                                    selectedExperienceIndex === index ? experienceCardActive : experienceCardIdle
                                   }`}
                                 >
                                   {isCurrentRole ? (
-                                    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-emerald-300">
+                                    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-sky-300">
                                       Present
                                     </p>
                                   ) : null}
                                   <p
-                                    className={`text-[10px] uppercase tracking-[0.12em] text-emerald-100/90 ${
+                                    className={`text-[10px] uppercase tracking-[0.12em] text-slate-400 ${
                                       isCurrentRole ? 'mt-1' : ''
                                     }`}
                                   >
@@ -472,9 +469,7 @@ function App() {
                               className={`h-4 w-4 rounded-full border shadow-[0_0_12px_rgba(103,232,249,0.6)] transition ${
                                   selectedExperienceIndex === index
                                     ? 'border-white bg-cyan-200 scale-110'
-                                  : item.period.includes('Present')
-                                  ? 'border-emerald-100 bg-emerald-300 hover:scale-105'
-                                  : 'border-cyan-100/80 bg-cyan-300 hover:scale-105'
+                                    : 'border-cyan-100/80 bg-sky-400/80 hover:scale-105'
                                 }`}
                               />
                             </li>
@@ -495,19 +490,17 @@ function App() {
                                 <button
                                   type="button"
                                   onClick={() => selectExperience(index)}
-                                  className={`h-full w-full rounded-2xl border p-3 text-left backdrop-blur-md transition ${
-                                    selectedExperienceIndex === index
-                                      ? 'border-emerald-200/60 bg-emerald-300/10'
-                                      : 'border-white/10 bg-slate-900/85 hover:border-emerald-100/35'
+                                  className={`h-full w-full rounded-2xl border p-3 text-left transition ${
+                                    selectedExperienceIndex === index ? experienceCardActive : experienceCardIdle
                                   }`}
                                 >
                                   {isCurrentRole ? (
-                                    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-emerald-300">
+                                    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-sky-300">
                                       Present
                                     </p>
                                   ) : null}
                                   <p
-                                    className={`text-[10px] uppercase tracking-[0.12em] text-emerald-100/90 ${
+                                    className={`text-[10px] uppercase tracking-[0.12em] text-slate-400 ${
                                       isCurrentRole ? 'mt-1' : ''
                                     }`}
                                   >
@@ -535,52 +528,48 @@ function App() {
                   </div>
                 </div>
               </div>
-            </div>
           </div>
         </motion.section>
 
         <motion.section
           id="resume"
-          className="relative h-[calc(100vh-73px)] snap-start [scroll-snap-stop:always]"
-          initial={SECTION_TRANSITIONS.resume.initial}
-          whileInView={SECTION_TRANSITIONS.resume.animate}
-          viewport={{ root: mainRef, amount: 0.55 }}
-          transition={{ type: 'spring', stiffness: 108, damping: 15, mass: 0.9 }}
+          className="section-decor section-decor--resume relative min-h-[calc(100vh-73px)] snap-start [scroll-snap-stop:always] xl:h-[calc(100vh-73px)]"
+          initial={SECTION_MOTION.initial}
+          whileInView={SECTION_MOTION.animate}
+          viewport={{ root: mainRef, amount: 0.35 }}
+          transition={{ type: 'spring', stiffness: 106, damping: 16, mass: 0.92 }}
         >
-          <div className="pointer-events-none absolute right-0 top-1/2 hidden h-56 w-56 -translate-y-1/2 rounded-full bg-amber-200/30 blur-3xl lg:block" />
-          <div className="mx-auto flex h-full w-full max-w-[96vw] items-stretch px-4 py-5 md:px-8">
-            <div className={`flex h-full w-full flex-col rounded-[2rem] border p-6 backdrop-blur-xl md:p-8 ${SECTION_THEME.resume.frame}`}>
-              <SectionHeading
-                eyebrow="Resume"
-                title="Resume preview and download"
-                description="Quickly scan my resume here, then download the full PDF."
-              />
-              <div className="grid flex-1 items-stretch gap-5 lg:grid-cols-2">
-                <div className="flex h-full flex-col rounded-2xl border border-white/15 bg-slate-950/45 p-4">
-                  <p className="mb-3 text-sm font-medium text-slate-200">Quick Preview</p>
-                  <div className="overflow-hidden rounded-xl border border-white/10 bg-slate-900/80">
-                    <iframe
-                      src="/Joshua_Chavez_Resume_5-21.pdf#view=FitH"
-                      title="Joshua Chavez Resume Preview"
-                      className="h-[22rem] w-full md:h-[28rem] lg:h-[34rem]"
-                    />
-                  </div>
+          <div className="mx-auto flex h-full w-full max-w-6xl flex-col justify-center px-4 py-8 md:px-8 md:py-10">
+            <SectionHeading
+              eyebrow="Resume"
+              title="Resume preview and download"
+              description="Quickly scan my resume here, then download the full PDF."
+            />
+            <div className="grid flex-1 items-stretch gap-5 xl:grid-cols-2">
+              <div className={`flex h-full flex-col ${PANEL_PAD}`}>
+                <p className="text-sm font-medium uppercase tracking-[0.14em] text-sky-300">Quick Preview</p>
+                <div className="mt-3 overflow-hidden rounded-xl border border-white/10 bg-slate-900/80">
+                  <iframe
+                    src="/Joshua_Chavez_Resume_5-21.pdf#view=FitH"
+                    title="Joshua Chavez Resume Preview"
+                    className="h-[20rem] w-full sm:h-[24rem] md:h-[28rem] xl:h-[34rem]"
+                  />
                 </div>
-                <div className="flex h-full flex-col justify-center rounded-2xl border border-white/15 bg-white/5 p-6">
-                  <p className="text-sm uppercase tracking-[0.18em] text-amber-200">Resume PDF</p>
-                  <h3 className="mt-3 text-2xl font-semibold text-white">Download the full file</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-slate-300">
-                    Use the button below to download the complete resume. The preview is for quick review, and
-                    the downloaded version keeps full detail and formatting.
-                  </p>
-                  <a
-                    href="/Joshua_Chavez_Resume_5-21.pdf"
-                    download
-                    className="mt-6 inline-flex w-fit rounded-xl bg-gradient-to-r from-sky-300 to-indigo-300 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:from-sky-200 hover:to-indigo-200"
-                  >
-                    Download Resume
-                  </a>
-                </div>
+              </div>
+              <div className={`flex h-full flex-col justify-center ${PANEL_PAD}`}>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-sky-300">Resume PDF</p>
+                <h3 className="mt-3 text-2xl font-semibold text-white">Download the full file</h3>
+                <p className="mt-3 text-sm leading-relaxed text-slate-400">
+                  Use the button below to download the complete resume. The preview is for quick review, and
+                  the downloaded version keeps full detail and formatting.
+                </p>
+                <a
+                  href="/Joshua_Chavez_Resume_5-21.pdf"
+                  download
+                  className="mt-6 inline-flex w-fit rounded-full bg-gradient-to-r from-sky-300 to-indigo-300 px-6 py-3 text-sm font-semibold text-slate-950 transition hover:from-sky-200 hover:to-indigo-200"
+                >
+                  Download Resume
+                </a>
               </div>
             </div>
           </div>
@@ -588,41 +577,74 @@ function App() {
 
         <motion.section
           id="contact"
-          className="relative h-[calc(100vh-73px)] snap-start [scroll-snap-stop:always]"
-          initial={SECTION_TRANSITIONS.contact.initial}
-          whileInView={SECTION_TRANSITIONS.contact.animate}
-          viewport={{ root: mainRef, amount: 0.55 }}
-          transition={{ type: 'spring', stiffness: 104, damping: 14, mass: 0.9 }}
+          className="section-decor section-decor--contact relative min-h-[calc(100vh-73px)] snap-start [scroll-snap-stop:always] xl:h-[calc(100vh-73px)]"
+          initial={SECTION_MOTION.initial}
+          whileInView={SECTION_MOTION.animate}
+          viewport={{ root: mainRef, amount: 0.35 }}
+          transition={{ type: 'spring', stiffness: 106, damping: 16, mass: 0.92 }}
         >
-          <div className="pointer-events-none absolute -right-8 top-1/2 hidden h-56 w-56 -translate-y-1/2 rounded-full bg-indigo-200/30 blur-3xl lg:block" />
-          <div className="mx-auto flex h-full w-full max-w-[96vw] items-stretch px-4 py-5 md:px-8">
-            <div className={`flex h-full w-full flex-col rounded-[2rem] border p-6 backdrop-blur-xl md:p-8 ${SECTION_THEME.contact.frame}`}>
-              <SectionHeading eyebrow="Contact" title="Let’s connect" description="I am open to IT, systems, and software development opportunities." />
-              <div className="grid flex-1 gap-4 md:grid-cols-2">
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
-                  <p className="text-sm text-slate-300">Email</p>
-                  <a className="mt-1 block text-white hover:text-sky-300" href={`mailto:${contactData.email}`}>{contactData.email}</a>
-                  <p className="mt-4 text-sm text-slate-300">Phone</p>
-                  <a className="mt-1 block text-white hover:text-sky-300" href={`tel:${contactData.phone.replace(/[^+\d]/g, '')}`}>{contactData.phone}</a>
-                  <p className="mt-4 text-sm text-slate-300">LinkedIn</p>
-                  <a className="mt-1 block text-white hover:text-sky-300" href={contactData.linkedin} target="_blank" rel="noreferrer">{contactData.linkedin}</a>
-                  <p className="mt-4 text-sm text-slate-300">GitHub</p>
-                  <a className="mt-1 block text-white hover:text-sky-300" href={contactData.github} target="_blank" rel="noreferrer">{contactData.github}</a>
+          <div className="mx-auto flex h-full w-full max-w-6xl flex-col justify-center px-4 py-8 md:px-8 md:py-10">
+            <SectionHeading
+              eyebrow="Contact"
+              title="Let’s connect"
+              description="I am open to IT, systems, and software development opportunities."
+            />
+            <div className="grid flex-1 min-h-0 gap-4 md:grid-cols-2">
+              <div className={PANEL_PAD}>
+                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sky-300/90">Email</p>
+                  <a
+                    className="mt-2 block text-xl font-semibold text-white underline-offset-4 transition hover:text-sky-200 hover:underline md:text-2xl"
+                    href={`mailto:${contactData.email}`}
+                  >
+                    {contactData.email}
+                  </a>
+
+                  <p className="mt-7 text-xs font-semibold uppercase tracking-[0.22em] text-sky-300/90">Phone</p>
+                  <a
+                    className="mt-2 block text-xl font-semibold text-white underline-offset-4 transition hover:text-sky-200 hover:underline md:text-2xl"
+                    href={`tel:${contactData.phone.replace(/[^+\d]/g, '')}`}
+                  >
+                    {contactData.phone}
+                  </a>
+
+                  <div className="mt-8 grid gap-5 md:grid-cols-2">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sky-300/90">LinkedIn</p>
+                      <a
+                        className="mt-2 block break-all text-base font-medium text-white underline-offset-4 transition hover:text-sky-200 hover:underline md:text-lg"
+                        href={contactData.linkedin}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {contactData.linkedin}
+                      </a>
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sky-300/90">GitHub</p>
+                      <a
+                        className="mt-2 block break-all text-base font-medium text-white underline-offset-4 transition hover:text-sky-200 hover:underline md:text-lg"
+                        href={contactData.github}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {contactData.github}
+                      </a>
+                    </div>
+                  </div>
                 </div>
-                <form className="flex h-full flex-col rounded-2xl border border-white/10 bg-white/5 p-6" onSubmit={(event) => event.preventDefault()}>
-                  <label className="mb-2 block text-sm text-slate-200" htmlFor="name">Name</label>
-                  <input id="name" className="mb-4 w-full rounded-lg border border-white/10 bg-slate-900/70 px-3 py-2 text-sm text-white outline-none transition focus:border-sky-300" placeholder="Your name" type="text" />
-                  <label className="mb-2 block text-sm text-slate-200" htmlFor="email">Email</label>
-                  <input id="email" className="mb-4 w-full rounded-lg border border-white/10 bg-slate-900/70 px-3 py-2 text-sm text-white outline-none transition focus:border-sky-300" placeholder="your@email.com" type="email" />
-                  <label className="mb-2 block text-sm text-slate-200" htmlFor="message">Message</label>
-                  <textarea id="message" rows={5} className="mb-4 w-full flex-1 rounded-lg border border-white/10 bg-slate-900/70 px-3 py-2 text-sm text-white outline-none transition focus:border-sky-300" placeholder="How can I help?" />
-                  <button type="submit" className="rounded-xl bg-gradient-to-r from-sky-300 to-indigo-300 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:from-sky-200 hover:to-indigo-200">Send Message</button>
-                </form>
+
+                <div className={`relative min-h-[16rem] overflow-hidden ${PANEL} md:min-h-0`}>
+                  <img
+                    src="/joshua-chavez.png"
+                    alt="Joshua Chavez"
+                    className="absolute inset-0 h-full w-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
               </div>
-              <p className="mt-6 text-center text-xs text-slate-400">
-                Built by Joshua Chavez with React, Tailwind CSS, and Framer Motion.
-              </p>
-            </div>
+            <p className="mt-6 text-center text-xs text-slate-500">
+              Built by Joshua Chavez with React, Tailwind CSS, and Framer Motion.
+            </p>
           </div>
         </motion.section>
       </main>
